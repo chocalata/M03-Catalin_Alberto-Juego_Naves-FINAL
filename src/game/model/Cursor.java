@@ -1,22 +1,22 @@
 package game.model;
 
 public class Cursor {
-    private int posX;
-    private int posY;
+    private double posX;
+    private double posY;
 
-    public void setPosX(int posX) {
+    public void setPosX(double posX) {
         this.posX = posX;
     }
 
-    public void setPosY(int posY) {
+    public void setPosY(double posY) {
         this.posY = posY;
     }
 
-    public int getPosX() {
+    public double getPosX() {
         return posX;
     }
 
-    public int getPosY() {
+    public double getPosY() {
         return posY;
     }
 }
