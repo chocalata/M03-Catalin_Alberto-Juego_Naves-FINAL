@@ -4,7 +4,10 @@ import javafx.beans.property.BooleanProperty;
 
 import java.awt.*;
 
+import javafx.scene.SnapshotParameters;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 
 public class Nave {
@@ -12,11 +15,16 @@ public class Nave {
 
     private double posX;
     private double posY;
-    public final int SPEED = 3;
+    public final int SPEED = 5;
     private BooleanProperty upPressed, downPressed, rightPressed, leftPressed;
-    private Image imgNave;
+    private ImageView imgNave;
+    private Image imagenRotada;
 
-    public Nave(int posX, int posY, Image imgNave, BooleanProperty upPressed, BooleanProperty downPressed, BooleanProperty rightPressed, BooleanProperty leftPressed) {
+    private double angle;
+
+    private SnapshotParameters snapshotParameters;
+
+    public Nave(int posX, int posY, ImageView imgNave, BooleanProperty upPressed, BooleanProperty downPressed, BooleanProperty rightPressed, BooleanProperty leftPressed) {
         orientation = new Cursor();
         this.posX = posX;
         this.posY = posY;
@@ -27,6 +35,9 @@ public class Nave {
         this.leftPressed = leftPressed;
 
         this.imgNave = imgNave;
+
+        this.snapshotParameters = new SnapshotParameters();
+        snapshotParameters.setFill(Color.TRANSPARENT);
     }
 
     public Cursor getOrientation() {
@@ -38,7 +49,15 @@ public class Nave {
         orientation.setPosY(y);
     }
 
-    public Image getImgNave(){
+    public void setImagenRotada(Image imagenRotada) {
+        this.imagenRotada = imagenRotada;
+    }
+
+    public Image getImagenRotada() {
+        return imagenRotada;
+    }
+
+    public ImageView getImgNave(){
         return imgNave;
     }
     public double getPosX() {
@@ -72,7 +91,7 @@ public class Nave {
 
     }
 
-    public double getAngle(){
+    public void rotate(){
 //        double centerX = posX + imgNave.getHeight()/2;
 //        double centerY = posY + imgNave.getWidth()/2;
 //
@@ -81,7 +100,14 @@ public class Nave {
 //        double co = (centerY - orientation.getPosY());
 //
 //        return Math.toDegrees(Math.atan2(co, cc))-90;
-        return Math.toDegrees(Math.atan2(((posY + imgNave.getWidth()/2) - orientation.getPosY()), ((posX + imgNave.getHeight()/2) - orientation.getPosX())))-90;
+        angle = Math.round(Math.toDegrees(
+                Math.atan2(
+                    ((posY + imagenRotada.getWidth()/2) - orientation.getPosY()),
+                    ((posX + imagenRotada.getHeight()/2) - orientation.getPosX()))
+                )
+        )-90;
+        imgNave.setRotate(angle);
+        imagenRotada = imgNave.snapshot(snapshotParameters, null);
 
     }
 }

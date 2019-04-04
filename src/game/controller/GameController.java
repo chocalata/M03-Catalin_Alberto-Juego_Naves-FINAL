@@ -9,12 +9,16 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import game.model.Nave;
+import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
+import javafx.stage.Stage;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -32,14 +36,37 @@ public class GameController extends Setter implements Initializable {
     //Teclas a pulsar
     private BooleanProperty leftPressed, rightPressed, upPressed, downPressed;
 
+    //Nave
     Nave nave;
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        rightPressed = new SimpleBooleanProperty();
+        leftPressed = new SimpleBooleanProperty();
+        upPressed = new SimpleBooleanProperty();
+        downPressed = new SimpleBooleanProperty();
+        anyPressed = upPressed.or(downPressed).or(leftPressed).or(rightPressed);
+
+        nave = new Nave(500,500,new ImageView("game/img/naves/navePlayer_1.png"), this.upPressed, this.downPressed, this.rightPressed, this.leftPressed);
+
+        nave.setImagenRotada(nave.getImgNave().getImage());
+
+        graphicsContext = canvas.getGraphicsContext2D();
+
+    }
 
     @Override
     public void setScene(Scene scene){
         super.setScene(scene);
+
+        scene.setOnMouseDragged(event->{
+            nave.getOrientation().setPosY(event.getY());
+            nave.getOrientation().setPosX(event.getX());
+        });
         scene.setOnMouseMoved(event->{
-            nave.getOrientation().setPosY(event.getSceneY());
-            nave.getOrientation().setPosX(event.getSceneX());
+            nave.getOrientation().setPosY(event.getY());
+            nave.getOrientation().setPosX(event.getX());
         });
         scene.setOnKeyPressed(key -> {
             if (key.getCode() == KeyCode.UP) {
@@ -75,20 +102,11 @@ public class GameController extends Setter implements Initializable {
     }
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-
-
-        rightPressed = new SimpleBooleanProperty();
-        leftPressed = new SimpleBooleanProperty();
-        upPressed = new SimpleBooleanProperty();
-        downPressed = new SimpleBooleanProperty();
-        anyPressed = upPressed.or(downPressed).or(leftPressed).or(rightPressed);
-
-        nave = new Nave(500,500, new Image("game/img/naves/navePlayer_1.png"), this.upPressed, this.downPressed, this.rightPressed, this.leftPressed);
-
-        graphicsContext = canvas.getGraphicsContext2D();
+    public void setStage(Stage stage) {
+        super.setStage(stage);
+        canvas.setHeight(stage.getHeight());
+        canvas.setWidth(stage.getWidth());
     }
-    Rotate rotate;
 
     private void start(){
         final long startNanoTime = System.nanoTime();
@@ -98,16 +116,36 @@ public class GameController extends Setter implements Initializable {
                 if(anyPressed.get()) {
                     nave.mover();
                 }
+                nave.rotate();
+                checkCollisions();
 
-                graphicsContext.clearRect(0,0, Resoluciones.GAME_SCREEN_WIDTH, Resoluciones.GAME_SCREEN_HEIGHT);
-                rotate = new Rotate(nave.getAngle(), nave.getPosX() + nave.getImgNave().getWidth()/2, nave.getPosY() + nave.getImgNave().getHeight()/2);
+                graphicsContext.clearRect(0,0, stage.getWidth(), stage.getHeight());
 
-                //PROBLEMA: ¡¡ESTO GIRA TODA LA ESCENA!!
-                graphicsContext.setTransform(rotate.getMxx(), rotate.getMyx(), rotate.getMxy(), rotate.getMyy(), rotate.getTx(), rotate.getTy());
+                graphicsContext.drawImage(nave.getImagenRotada(), nave.getPosX(), nave.getPosY());
 
-                graphicsContext.drawImage(nave.getImgNave(), nave.getPosX(), nave.getPosY());
+                graphicsContext.drawImage(nave.getImagenRotada(),
+                        nave.getPosX() + nave.getImgNave().getImage().getWidth(),
+                        nave.getPosY() + nave.getImgNave().getImage().getHeight());
+
 
             }
         }.start();
+    }
+
+    private void checkCollisions(){
+        checkNaveInScreen();
+    }
+
+    private void checkNaveInScreen() {
+        if(nave.getPosX() < 0){
+            nave.setPosX(0);
+        }else if(nave.getPosX() + nave.getImgNave().getImage().getWidth() + Resoluciones.AJUSTAR_PANTALLA_X > stage.getWidth()){
+            nave.setPosX(stage.getWidth() - nave.getImgNave().getImage().getWidth() - Resoluciones.AJUSTAR_PANTALLA_X);
+        }
+        if(nave.getPosY() < 0){
+            nave.setPosY(0);
+        }else if(nave.getPosY() + nave.getImgNave().getImage().getHeight() + Resoluciones.AJUSTAR_PANTALLA_Y > stage.getHeight()){
+            nave.setPosY(stage.getHeight() - nave.getImgNave().getImage().getHeight() - Resoluciones.AJUSTAR_PANTALLA_Y);
+        }
     }
 }

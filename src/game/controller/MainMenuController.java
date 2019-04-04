@@ -12,11 +12,10 @@ import java.io.IOException;
 public class MainMenuController extends Setter {
 
     @FXML public void playGame() throws IOException {
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/game.fxml"));
         Parent root = loader.load();
 
-        scene = new Scene(root, Resoluciones.GAME_SCREEN_WIDTH, Resoluciones.GAME_SCREEN_HEIGHT);
+        scene = new Scene(root, stage.getWidth(), stage.getHeight());
 
         GameController gameController = loader.getController();
         gameController.setScene(scene);
@@ -24,6 +23,7 @@ public class MainMenuController extends Setter {
 
         stage.setTitle("Apolo X");
         stage.setScene(scene);
+        //stage.setMaximized(true);
         stage.show();
     }
 
