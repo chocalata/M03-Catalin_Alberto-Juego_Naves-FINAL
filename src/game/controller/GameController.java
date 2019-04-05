@@ -50,7 +50,7 @@ public class GameController extends Setter implements Initializable {
 
         graphicsContext = canvas.getGraphicsContext2D();
 
-        /////////////HACER LAS NAVES DE 44x44 POR AHORA SOLO HAY 1
+        //////////////HACER LAS NAVES DE 44x44 POR AHORA SOLO HAY 1
         nave = new Nave(graphicsContext,500,500,new ImageView("game/img/naves/navePlayer_1-1.png"), this.upPressed, this.downPressed, this.rightPressed, this.leftPressed, this.anyPressed);
 
         nave.setImagenRotada(nave.getImgNave().getImage());
