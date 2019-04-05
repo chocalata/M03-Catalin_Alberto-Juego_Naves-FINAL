@@ -48,11 +48,13 @@ public class GameController extends Setter implements Initializable {
         downPressed = new SimpleBooleanProperty();
         anyPressed = upPressed.or(downPressed).or(leftPressed).or(rightPressed);
 
-        nave = new Nave(500,500,new ImageView("game/img/naves/navePlayer_1.png"), this.upPressed, this.downPressed, this.rightPressed, this.leftPressed);
+        graphicsContext = canvas.getGraphicsContext2D();
+
+        /////////////HACER LAS NAVES DE 44x44 POR AHORA SOLO HAY 1
+        nave = new Nave(graphicsContext,500,500,new ImageView("game/img/naves/navePlayer_1-1.png"), this.upPressed, this.downPressed, this.rightPressed, this.leftPressed, this.anyPressed);
 
         nave.setImagenRotada(nave.getImgNave().getImage());
 
-        graphicsContext = canvas.getGraphicsContext2D();
 
     }
 
@@ -60,40 +62,42 @@ public class GameController extends Setter implements Initializable {
     public void setScene(Scene scene){
         super.setScene(scene);
 
+        scene.setOnMouseReleased(event->{
+            nave.shoot(event.getX(), event.getY());
+        });
+
         scene.setOnMouseDragged(event->{
-            nave.getOrientation().setPosY(event.getY());
-            nave.getOrientation().setPosX(event.getX());
+            nave.setOrientation(event.getX(), event.getY());
         });
         scene.setOnMouseMoved(event->{
-            nave.getOrientation().setPosY(event.getY());
-            nave.getOrientation().setPosX(event.getX());
+            nave.setOrientation(event.getX(), event.getY());
         });
         scene.setOnKeyPressed(key -> {
-            if (key.getCode() == KeyCode.UP) {
+            if (key.getCode() == KeyCode.UP || key.getCode() == KeyCode.W) {
                 upPressed.set(true);
             }
-            if (key.getCode() == KeyCode.DOWN) {
+            if (key.getCode() == KeyCode.DOWN || key.getCode() == KeyCode.S) {
                 downPressed.set(true);
             }
-            if (key.getCode() == KeyCode.LEFT) {
+            if (key.getCode() == KeyCode.LEFT || key.getCode() == KeyCode.A) {
                 leftPressed.set(true);
             }
-            if (key.getCode() == KeyCode.RIGHT) {
+            if (key.getCode() == KeyCode.RIGHT || key.getCode() == KeyCode.D) {
                 rightPressed.set(true);
             }
         });
 
         scene.setOnKeyReleased(key -> {
-            if (key.getCode() == KeyCode.UP) {
+            if (key.getCode() == KeyCode.UP || key.getCode() == KeyCode.W) {
                 upPressed.set(false);
             }
-            if (key.getCode() == KeyCode.DOWN) {
+            if (key.getCode() == KeyCode.DOWN || key.getCode() == KeyCode.S) {
                 downPressed.set(false);
             }
-            if (key.getCode() == KeyCode.LEFT) {
+            if (key.getCode() == KeyCode.LEFT || key.getCode() == KeyCode.A) {
                 leftPressed.set(false);
             }
-            if (key.getCode() == KeyCode.RIGHT) {
+            if (key.getCode() == KeyCode.RIGHT || key.getCode() == KeyCode.D) {
                 rightPressed.set(false);
             }
         });
@@ -113,20 +117,13 @@ public class GameController extends Setter implements Initializable {
         new AnimationTimer() {
             public void handle(long currentNanoTime)
             {
-                if(anyPressed.get()) {
-                    nave.mover();
-                }
-                nave.rotate();
+                nave.update();
+
                 checkCollisions();
 
                 graphicsContext.clearRect(0,0, stage.getWidth(), stage.getHeight());
 
-                graphicsContext.drawImage(nave.getImagenRotada(), nave.getPosX(), nave.getPosY());
-
-                graphicsContext.drawImage(nave.getImagenRotada(),
-                        nave.getPosX() + nave.getImgNave().getImage().getWidth(),
-                        nave.getPosY() + nave.getImgNave().getImage().getHeight());
-
+                nave.render();
 
             }
         }.start();
@@ -134,6 +131,7 @@ public class GameController extends Setter implements Initializable {
 
     private void checkCollisions(){
         checkNaveInScreen();
+
     }
 
     private void checkNaveInScreen() {

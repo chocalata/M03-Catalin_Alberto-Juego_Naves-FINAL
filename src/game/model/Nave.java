@@ -1,10 +1,12 @@
 package game.model;
 
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 
 import java.awt.*;
 
 import javafx.scene.SnapshotParameters;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -17,15 +19,24 @@ public class Nave {
     private double posY;
     public final int SPEED = 5;
     private BooleanProperty upPressed, downPressed, rightPressed, leftPressed;
+    private BooleanBinding anyPressed;
+
     private ImageView imgNave;
     private Image imagenRotada;
 
-    private double angle;
+    private Arma arma;
 
     private SnapshotParameters snapshotParameters;
 
-    public Nave(int posX, int posY, ImageView imgNave, BooleanProperty upPressed, BooleanProperty downPressed, BooleanProperty rightPressed, BooleanProperty leftPressed) {
+    private GraphicsContext graphicsContext;
+
+    public Nave(GraphicsContext graphicsContext, int posX, int posY, ImageView imgNave, BooleanProperty upPressed, BooleanProperty downPressed, BooleanProperty rightPressed, BooleanProperty leftPressed, BooleanBinding anyPressed) {
+
+        arma = new Arma(graphicsContext);
         orientation = new Cursor();
+
+        this.graphicsContext = graphicsContext;
+
         this.posX = posX;
         this.posY = posY;
 
@@ -33,18 +44,20 @@ public class Nave {
         this.downPressed = downPressed;
         this.rightPressed = rightPressed;
         this.leftPressed = leftPressed;
+        this.anyPressed = anyPressed;
 
         this.imgNave = imgNave;
 
         this.snapshotParameters = new SnapshotParameters();
         snapshotParameters.setFill(Color.TRANSPARENT);
+
     }
 
     public Cursor getOrientation() {
         return orientation;
     }
 
-    public void setOrientation(int x, int y){
+    public void setOrientation(double x, double y){
         orientation.setPosX(x);
         orientation.setPosY(y);
     }
@@ -91,7 +104,7 @@ public class Nave {
 
     }
 
-    public void rotate(){
+    public double getAngle(){
 //        double centerX = posX + imgNave.getHeight()/2;
 //        double centerY = posY + imgNave.getWidth()/2;
 //
@@ -100,14 +113,41 @@ public class Nave {
 //        double co = (centerY - orientation.getPosY());
 //
 //        return Math.toDegrees(Math.atan2(co, cc))-90;
-        angle = Math.round(Math.toDegrees(
+        return Math.round(Math.toDegrees(
                 Math.atan2(
-                    ((posY + imagenRotada.getWidth()/2) - orientation.getPosY()),
-                    ((posX + imagenRotada.getHeight()/2) - orientation.getPosX()))
+                        ((posY + imagenRotada.getWidth()/2) - orientation.getPosY()),
+                        ((posX + imagenRotada.getHeight()/2) - orientation.getPosX()))
                 )
         )-90;
-        imgNave.setRotate(angle);
-        imagenRotada = imgNave.snapshot(snapshotParameters, null);
-
     }
+
+    public void rotate(){
+        imgNave.setRotate(getAngle());
+
+        imagenRotada = imgNave.snapshot(snapshotParameters, null);
+    }
+
+    public void shoot(double cursorX, double cursorY) {
+        arma.shoot(
+                (posX + imgNave.getImage().getWidth()/2),
+                (posY + imgNave.getImage().getHeight()/2),
+                (posX + imgNave.getImage().getWidth()/2) - cursorX,
+                (posY + imgNave.getImage().getHeight()/2) - cursorY,
+                getAngle());
+    }
+
+    public void update(){
+        arma.update();
+        if(anyPressed.get()) {
+            mover();
+        }
+        rotate();
+    }
+
+    public void render(){
+        arma.render();
+
+        graphicsContext.drawImage(imagenRotada, posX, posY);
+    }
+
 }

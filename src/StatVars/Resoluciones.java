@@ -10,6 +10,8 @@ public class Resoluciones {
     public final static double AJUSTAR_PANTALLA_X = 25;
     public final static double AJUSTAR_PANTALLA_Y = 50;
 
+    public final static double AJUSTAR_CATETOS = 5;
+
 
 
 }
