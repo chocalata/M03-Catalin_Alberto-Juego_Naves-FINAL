@@ -20,6 +20,7 @@ public class MainMenuController extends Setter {
         GameController gameController = loader.getController();
         gameController.setScene(scene);
         gameController.setStage(stage);
+        gameController.setIdNave(1/*EL ID QUE ME DARÁ EL SERVIDOR PARA LA NAVE.*/);
 
         stage.setTitle("Apolo X");
         stage.setScene(scene);

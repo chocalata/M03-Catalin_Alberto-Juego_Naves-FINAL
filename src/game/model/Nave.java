@@ -13,11 +13,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 
 public class Nave {
+    private int id;
+
     private Cursor orientation;
 
     private double posX;
     private double posY;
-    public final int SPEED = 5;
+    private final int SPEED = 5;
     private BooleanProperty upPressed, downPressed, rightPressed, leftPressed;
     private BooleanBinding anyPressed;
 
@@ -30,7 +32,14 @@ public class Nave {
 
     private GraphicsContext graphicsContext;
 
-    public Nave(GraphicsContext graphicsContext, int posX, int posY, ImageView imgNave, BooleanProperty upPressed, BooleanProperty downPressed, BooleanProperty rightPressed, BooleanProperty leftPressed, BooleanBinding anyPressed) {
+    public Nave(GraphicsContext graphicsContext, int posX, int posY, int idNave, ImageView imgNave, BooleanProperty upPressed, BooleanProperty downPressed, BooleanProperty rightPressed, BooleanProperty leftPressed, BooleanBinding anyPressed) {
+        this.id = idNave;
+        System.out.println(this.id);
+        System.out.println(this.id);
+        System.out.println(this.id);
+        System.out.println(this.id);
+        System.out.println(this.id);
+        System.out.println(this.id);
 
         arma = new Arma(graphicsContext);
         orientation = new Cursor();
@@ -51,6 +60,10 @@ public class Nave {
         this.snapshotParameters = new SnapshotParameters();
         snapshotParameters.setFill(Color.TRANSPARENT);
 
+    }
+
+    public Arma getArma(){
+        return arma;
     }
 
     public Cursor getOrientation() {
@@ -88,20 +101,23 @@ public class Nave {
         posY = pos;
     }
 
-    public void mover(){
+    public int getId(){
+        return id;
+    }
+
+    private void mover(){
         if (upPressed.get()) {
-            setPosY(getPosY() - SPEED);
+            posY = getPosY() - SPEED;
         }
         if (downPressed.get()) {
-            setPosY(getPosY() + SPEED);
+            posY = getPosY() + SPEED;
         }
         if (leftPressed.get()) {
-            setPosX(getPosX() - SPEED);
+            posX = getPosX() - SPEED;
         }
         if (rightPressed.get()) {
-            setPosX(getPosX() + SPEED);
+            posX = getPosX() + SPEED;
         }
-
     }
 
     public double getAngle(){
@@ -121,7 +137,7 @@ public class Nave {
         )-90;
     }
 
-    public void rotate(){
+    private void rotate(){
         imgNave.setRotate(getAngle());
 
         imagenRotada = imgNave.snapshot(snapshotParameters, null);

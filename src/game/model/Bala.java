@@ -1,5 +1,6 @@
 package game.model;
 
+import StatVars.Enums;
 import StatVars.Resoluciones;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
@@ -7,35 +8,33 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
-import java.awt.*;
-import java.lang.reflect.Array;
-
 public class Bala {
+    private Enums.BulletState state;
 
     private double posX;
     private double posY;
 
-    private double coseno;
-    private double seno;
+    private double cos;
+    private double sin;
 
-    private final double speed = 30;
+    private final double speed = 15;
 
     private GraphicsContext graphicsContext;
 
     private Image imagenRotada;
-
-    private ImageView imgBala;
-
-    private double angle;
+    
+    private boolean added;
 
     public Bala(GraphicsContext graphicsContext, double x, double y, double cc, double co, double angle){
-
-        this.angle = angle;
+        //Para saber si la he añadido dentro del JSON.
+        added = false;
+        
+        state = Enums.BulletState.SHOOTING;
 
         SnapshotParameters snapshotParameters = new SnapshotParameters();
         snapshotParameters.setFill(Color.TRANSPARENT);
 
-        imgBala = new ImageView("game/img/bala.png");
+        ImageView imgBala = new ImageView("game/img/bala.png");
         System.out.println(angle);
         imgBala.setRotate(angle);
         imagenRotada = imgBala.snapshot(snapshotParameters, null);
@@ -45,16 +44,20 @@ public class Bala {
         posX = x;
         posY = y;
 
-        coseno = (cc + Resoluciones.AJUSTAR_CATETOS)/Math.hypot(cc, co);
-        seno = (co + Resoluciones.AJUSTAR_CATETOS)/Math.hypot(cc, co);
+        cos = (cc + Resoluciones.AJUSTAR_CATETOS)/Math.hypot(cc, co);
+        sin = (co + Resoluciones.AJUSTAR_CATETOS)/Math.hypot(cc, co);
 
     }
 
-    public void move(){
-        posX -= coseno * speed;
-        posY -= seno * speed;
+    private void move(){
+        posX -= cos * speed;
+        posY -= sin * speed;
 
         //System.out.println(posX + " " + posY);
+    }
+
+    public void remove(){
+        state = Enums.BulletState.TO_REMOVE;
     }
 
     public void update(){
@@ -71,5 +74,25 @@ public class Bala {
 
     public double getPosY() {
         return posY;
+    }
+
+    public double getCos() {
+        return cos;
+    }
+
+    public double getSin() {
+        return sin;
+    }
+
+    public Enums.BulletState getState() {
+        return state;
+    }
+
+    public boolean getAdded() {
+        return added;
+    }
+
+    public void setAddedTrue() {
+        added = true;
     }
 }

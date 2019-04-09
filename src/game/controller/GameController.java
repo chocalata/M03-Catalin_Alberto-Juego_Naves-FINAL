@@ -2,6 +2,7 @@ package game.controller;
 
 import StatVars.Resoluciones;
 import game.Setter;
+import game.model.toSend.NaveToSend;
 import javafx.animation.AnimationTimer;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
@@ -9,19 +10,14 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import game.model.Nave;
-import javafx.scene.paint.Color;
-import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
+import transformToJsonOrClass.Transformer;
 
-import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -39,6 +35,11 @@ public class GameController extends Setter implements Initializable {
     //Nave
     Nave nave;
 
+    //Datos que se mandan al servidor
+    NaveToSend dataToSend;
+
+   private double time;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -50,12 +51,9 @@ public class GameController extends Setter implements Initializable {
 
         graphicsContext = canvas.getGraphicsContext2D();
 
-        //////////////HACER LAS NAVES DE 44x44 POR AHORA SOLO HAY 1
-        nave = new Nave(graphicsContext,500,500,new ImageView("game/img/naves/navePlayer_1-1.png"), this.upPressed, this.downPressed, this.rightPressed, this.leftPressed, this.anyPressed);
+        dataToSend = new NaveToSend();
 
-        nave.setImagenRotada(nave.getImgNave().getImage());
-
-
+        time = 0.01666666666;
     }
 
     @Override
@@ -106,6 +104,14 @@ public class GameController extends Setter implements Initializable {
     }
 
     @Override
+    public void setIdNave(int idNave) {
+        super.setIdNave(idNave);
+
+        nave = new Nave(graphicsContext,500,500, idNave,new ImageView("game/img/naves/navePlayer_1.png"), this.upPressed, this.downPressed, this.rightPressed, this.leftPressed, this.anyPressed);
+        nave.setImagenRotada(nave.getImgNave().getImage());
+    }
+
+    @Override
     public void setStage(Stage stage) {
         super.setStage(stage);
         canvas.setHeight(stage.getHeight());
@@ -114,14 +120,21 @@ public class GameController extends Setter implements Initializable {
 
     private void start(){
         final long startNanoTime = System.nanoTime();
+
         new AnimationTimer() {
             public void handle(long currentNanoTime)
             {
+                //Al ser 60 fotogramas por segundo, quiere decir que entre fotograma
+                //y fotograma pasan 0.017 segundos más o menos.
+
                 nave.update();
 
                 checkCollisions();
 
                 graphicsContext.clearRect(0,0, stage.getWidth(), stage.getHeight());
+
+                dataToSend.setData(nave, time);
+                System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + Transformer.classToJson(dataToSend));
 
                 nave.render();
 
@@ -132,6 +145,23 @@ public class GameController extends Setter implements Initializable {
     private void checkCollisions(){
         checkNaveInScreen();
 
+        checkBalaInScreen();
+
+    }
+
+    private void checkBalaInScreen() {
+        nave.getArma().getBalas().forEach(bala -> {
+            if(bala.getPosX() < 0){
+                bala.remove();
+            }else if(bala.getPosX() > stage.getWidth()){
+                bala.remove();
+            }
+            if(bala.getPosY() < 0){
+                bala.remove();
+            }else if(bala.getPosY() > stage.getHeight()){
+                bala.remove();
+            }
+        });
     }
 
     private void checkNaveInScreen() {

@@ -12,6 +12,4 @@ public class Resoluciones {
 
     public final static double AJUSTAR_CATETOS = 5;
 
-
-
 }
