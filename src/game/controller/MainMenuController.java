@@ -2,6 +2,7 @@ package game.controller;
 
 import StatVars.Resoluciones;
 import game.Setter;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,6 +29,24 @@ public class MainMenuController extends Setter {
         stage.show();
     }
 
-//    Media song =new Media("ss");
-//    MediaPlayer mediaPlayer = new MediaPlayer(song);
+    @FXML public void openMultiplayer() throws IOException {
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/multiplayerMenu.fxml"));
+        Parent root = loader.load();
+
+        scene = new Scene(root, Resoluciones.MENU_SCREEN_WIDTH, Resoluciones.MENU_SCREEN_HEIGHT);
+
+        MultiplayerMenuController gameController = loader.getController();
+        gameController.setScene(scene);
+        gameController.setStage(stage);
+        stage.setTitle("Apolo X");
+        stage.setScene(scene);
+        stage.show();
+
+    }
+
+    @FXML public void closeGame() {
+        Platform.exit();
+
+    }
 }

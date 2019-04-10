@@ -127,12 +127,11 @@ public class GameController extends Setter implements Initializable {
                 //Al ser 60 fotogramas por segundo, quiere decir que entre fotograma
                 //y fotograma pasan 0.017 segundos más o menos.
 
-                nave.update();
 
                 checkCollisions();
 
                 graphicsContext.clearRect(0,0, stage.getWidth(), stage.getHeight());
-
+                System.out.println(nave.getArma().getBalas().size());
                 dataToSend.setData(nave, time);
                 System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + Transformer.classToJson(dataToSend));
 
@@ -144,7 +143,6 @@ public class GameController extends Setter implements Initializable {
 
     private void checkCollisions(){
         checkNaveInScreen();
-
         checkBalaInScreen();
 
     }

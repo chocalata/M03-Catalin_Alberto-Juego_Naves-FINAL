@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="1000.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="game.controller.MultiplayerMenuController">
+   <children>
+      <ImageView fitHeight="1000.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/fondo_menu.jpg" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="TEXT" />
+         </cursor>
+      </ImageView>
+      <Pane layoutX="300.0" layoutY="300.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#999999af" height="400.0" stroke="BLACK" strokeType="INSIDE" width="400.0" />
+            <GridPane layoutX="33.0" layoutY="19.0" prefHeight="336.0" prefWidth="323.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="134.0" minHeight="10.0" prefHeight="69.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="217.0" minHeight="10.0" prefHeight="111.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="163.0" minHeight="10.0" prefHeight="72.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <ImageView fitHeight="70.0" fitWidth="216.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/img_titulo_apolo_x.png" />
+                     </image>
+                     <GridPane.margin>
+                        <Insets left="52.0" />
+                     </GridPane.margin>
+                  </ImageView>
+                  <TextField fx:id="et_ipServer" prefHeight="45.0" prefWidth="261.0" promptText="192.166.1.xxx" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <GridPane.margin>
+                        <Insets left="50.0" right="10.0" />
+                     </GridPane.margin>
+                  </TextField>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="IP " GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                     <font>
+                        <Font size="33.0" />
+                     </font>
+                     <GridPane.margin>
+                        <Insets left="17.0" />
+                     </GridPane.margin>
+                  </Text>
+                  <Button fx:id="bt_back" mnemonicParsing="false" onAction="#backToMainMenu" prefHeight="50.0" prefWidth="102.0" text="Back" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                  <Button fx:id="bt_connect" mnemonicParsing="false" onAction="#connectToServer" text="Conect" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <GridPane.margin>
+                        <Insets bottom="8.0" right="8.0" />
+                     </GridPane.margin>
+                  </Button>
+               </children>
+            </GridPane>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
