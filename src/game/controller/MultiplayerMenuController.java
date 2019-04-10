@@ -1,6 +1,7 @@
 package game.controller;
 
 import StatVars.Resoluciones;
+import StatVars.Strings;
 import game.Setter;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,7 +27,7 @@ public class MultiplayerMenuController extends Setter {
         mainMenuController.setStage(stage);
 
 
-        stage.setTitle("Apolo X");
+        stage.setTitle(Strings.NOMBRE_JUEGO);
         stage.setScene(scene);
         stage.show();
     }
@@ -43,7 +44,7 @@ public class MultiplayerMenuController extends Setter {
 
         setIpServer(et_ipServer.getText());
 
-        stage.setTitle("Apolo X");
+        stage.setTitle(Strings.NOMBRE_JUEGO);
         stage.setScene(scene);
         stage.show();
     }

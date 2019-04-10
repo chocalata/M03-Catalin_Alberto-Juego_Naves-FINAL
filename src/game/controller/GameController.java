@@ -126,7 +126,7 @@ public class GameController extends Setter implements Initializable {
             {
                 //Al ser 60 fotogramas por segundo, quiere decir que entre fotograma
                 //y fotograma pasan 0.017 segundos más o menos.
-
+                nave.update();
 
                 checkCollisions();
 

@@ -1,6 +1,7 @@
 package game.controller;
 
 import StatVars.Resoluciones;
+import StatVars.Strings;
 import game.Setter;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -23,7 +24,7 @@ public class MainMenuController extends Setter {
         gameController.setStage(stage);
         gameController.setIdNave(1/*EL ID QUE ME DARÁ EL SERVIDOR PARA LA NAVE.*/);
 
-        stage.setTitle("Apolo X");
+        stage.setTitle(Strings.NOMBRE_JUEGO);
         stage.setScene(scene);
         //stage.setMaximized(true);
         stage.show();
@@ -39,7 +40,7 @@ public class MainMenuController extends Setter {
         MultiplayerMenuController gameController = loader.getController();
         gameController.setScene(scene);
         gameController.setStage(stage);
-        stage.setTitle("Apolo X");
+        stage.setTitle(Strings.NOMBRE_JUEGO);
         stage.setScene(scene);
         stage.show();
 
