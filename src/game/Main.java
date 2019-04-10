@@ -15,14 +15,13 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/mainMenu.fxml"));
         Parent root = loader.load();
 
-
         Scene scene = new Scene(root, primaryStage.getWidth(), primaryStage.getHeight());
         MainMenuController controller = loader.getController();
         controller.setStage(primaryStage);
 
         primaryStage.setTitle("Apolo X");
-        primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 

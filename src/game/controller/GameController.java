@@ -1,7 +1,7 @@
 package game.controller;
 
 import StatVars.Resoluciones;
-import game.Setter;
+import game.GameSetter;
 import game.model.toSend.NaveToSend;
 import javafx.animation.AnimationTimer;
 import javafx.beans.binding.BooleanBinding;
@@ -21,94 +21,25 @@ import transformToJsonOrClass.Transformer;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class GameController extends Setter implements Initializable {
+public class GameController extends GameSetter implements Initializable {
 
     @FXML Canvas canvas;
-    GraphicsContext graphicsContext;
-
-    //Si se ha pulsado alguna.
-    private BooleanBinding anyPressed;
-
-    //Teclas a pulsar
-    private BooleanProperty leftPressed, rightPressed, upPressed, downPressed;
-
-    //Nave
-    Nave nave;
 
     //Datos que se mandan al servidor
-    NaveToSend dataToSend;
+    private NaveToSend dataToSend;
 
-   private double time;
+    private double time;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        rightPressed = new SimpleBooleanProperty();
-        leftPressed = new SimpleBooleanProperty();
-        upPressed = new SimpleBooleanProperty();
-        downPressed = new SimpleBooleanProperty();
-        anyPressed = upPressed.or(downPressed).or(leftPressed).or(rightPressed);
 
         graphicsContext = canvas.getGraphicsContext2D();
 
         dataToSend = new NaveToSend();
 
+        //Al ser 60 fotogramas por segundo, quiere decir que entre fotograma
+        //y fotograma pasan 0.017 segundos más o menos.
         time = 0.01666666666;
-    }
-
-    @Override
-    public void setScene(Scene scene){
-        super.setScene(scene);
-
-        scene.setOnMouseReleased(event->{
-            nave.shoot(event.getX(), event.getY());
-        });
-
-        scene.setOnMouseDragged(event->{
-            nave.setOrientation(event.getX(), event.getY());
-        });
-        scene.setOnMouseMoved(event->{
-            nave.setOrientation(event.getX(), event.getY());
-        });
-        scene.setOnKeyPressed(key -> {
-            if (key.getCode() == KeyCode.UP || key.getCode() == KeyCode.W) {
-                upPressed.set(true);
-            }
-            if (key.getCode() == KeyCode.DOWN || key.getCode() == KeyCode.S) {
-                downPressed.set(true);
-            }
-            if (key.getCode() == KeyCode.LEFT || key.getCode() == KeyCode.A) {
-                leftPressed.set(true);
-            }
-            if (key.getCode() == KeyCode.RIGHT || key.getCode() == KeyCode.D) {
-                rightPressed.set(true);
-            }
-        });
-
-        scene.setOnKeyReleased(key -> {
-            if (key.getCode() == KeyCode.UP || key.getCode() == KeyCode.W) {
-                upPressed.set(false);
-            }
-            if (key.getCode() == KeyCode.DOWN || key.getCode() == KeyCode.S) {
-                downPressed.set(false);
-            }
-            if (key.getCode() == KeyCode.LEFT || key.getCode() == KeyCode.A) {
-                leftPressed.set(false);
-            }
-            if (key.getCode() == KeyCode.RIGHT || key.getCode() == KeyCode.D) {
-                rightPressed.set(false);
-            }
-        });
-
-        start();
-    }
-
-    @Override
-    public void setIdNave(int idNave) {
-        super.setIdNave(idNave);
-
-        nave = new Nave(graphicsContext,500,500, idNave,new ImageView("game/img/naves/navePlayer_1.png"), this.upPressed, this.downPressed, this.rightPressed, this.leftPressed, this.anyPressed);
-        nave.setImagenRotada(nave.getImgNave().getImage());
     }
 
     @Override
@@ -118,22 +49,51 @@ public class GameController extends Setter implements Initializable {
         canvas.setWidth(stage.getWidth());
     }
 
-    private void start(){
+    public void start(boolean isMultiplayer){
+        if(isMultiplayer){
+            startMultiplayer();
+        }else {
+            startSigle();
+        }
+    }
+
+    private void startSigle(){
         final long startNanoTime = System.nanoTime();
 
         new AnimationTimer() {
             public void handle(long currentNanoTime)
             {
-                //Al ser 60 fotogramas por segundo, quiere decir que entre fotograma
-                //y fotograma pasan 0.017 segundos más o menos.
                 nave.update();
 
                 checkCollisions();
 
                 graphicsContext.clearRect(0,0, stage.getWidth(), stage.getHeight());
-                System.out.println(nave.getArma().getBalas().size());
+
                 dataToSend.setData(nave, time);
-                System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + Transformer.classToJson(dataToSend));
+                System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + Transformer.classToJson(dataToSend).getBytes().length);
+
+                nave.render();
+
+            }
+        }.start();
+    }
+
+    private void startMultiplayer(){
+        final long startNanoTime = System.nanoTime();
+
+        new AnimationTimer() {
+            public void handle(long currentNanoTime)
+            {
+                nave.update();
+                //recibeDatos;
+                //navesRecibidas.update();
+                checkCollisions();
+                dataToSend.setData(nave, time);
+                System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + Transformer.classToJson(dataToSend).getBytes().length);
+                //mandaDatos(dataToSend);
+
+                graphicsContext.clearRect(0,0, stage.getWidth(), stage.getHeight());
+
 
                 nave.render();
 
@@ -144,6 +104,8 @@ public class GameController extends Setter implements Initializable {
     private void checkCollisions(){
         checkNaveInScreen();
         checkBalaInScreen();
+
+
 
     }
 

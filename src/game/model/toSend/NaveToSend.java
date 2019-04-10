@@ -28,7 +28,7 @@ public class NaveToSend {
 
     public NaveToSend(){
         naveArmaBalas = new ArrayList<>();
-        timer = new Timer(10);
+        timer = new Timer(3);
     }
     int prueba = 0;
     public void setData(Nave nave, double time) {
@@ -37,6 +37,7 @@ public class NaveToSend {
         //Sin han pasado 10 segundos se borran todas las balas de dentro del array.
         if(timer.check()){
             naveArmaBalas.clear();
+            nave.getArma().getBalas().forEach(bala->bala.setAdded(false));
         }
 
         this.idNave = nave.getId();
@@ -52,7 +53,7 @@ public class NaveToSend {
             nave.getArma().getBalas().forEach(bala -> {
                 if(!bala.getAdded()) {
                     naveArmaBalas.add(new BalaToSend(bala.getPosX(), bala.getPosY(), nave.getId()));
-                    bala.setAddedTrue();
+                    bala.setAdded(true);
                 }
             });
         }

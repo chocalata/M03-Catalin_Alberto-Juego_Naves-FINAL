@@ -17,7 +17,7 @@ public class Bala {
     private double cos;
     private double sin;
 
-    private final double speed = 15;
+    private final double speed = 20;
 
     private GraphicsContext graphicsContext;
 
@@ -92,7 +92,8 @@ public class Bala {
         return added;
     }
 
-    public void setAddedTrue() {
-        added = true;
+    public void setAdded(boolean added) {
+        this.added = added;
     }
+
 }

@@ -2,7 +2,8 @@ package game.controller;
 
 import StatVars.Resoluciones;
 import StatVars.Strings;
-import game.Setter;
+import game.GameSetter;
+import game.SceneStageSetter;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,7 +13,7 @@ import javafx.scene.control.TextField;
 
 import java.io.IOException;
 
-public class MultiplayerMenuController extends Setter {
+public class MultiplayerMenuController extends SceneStageSetter {
 
     @FXML
     TextField et_ipServer;
@@ -41,9 +42,7 @@ public class MultiplayerMenuController extends Setter {
         MultiplayerLobbyController multiplayerLobbyController = loader.getController();
         multiplayerLobbyController.setScene(scene);
         multiplayerLobbyController.setStage(stage);
-
-        setIpServer(et_ipServer.getText());
-
+        
         stage.setTitle(Strings.NOMBRE_JUEGO);
         stage.setScene(scene);
         stage.show();

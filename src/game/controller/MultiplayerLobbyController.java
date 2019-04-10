@@ -2,7 +2,8 @@ package game.controller;
 
 import StatVars.Resoluciones;
 import StatVars.Strings;
-import game.Setter;
+import game.GameSetter;
+import game.SceneStageSetter;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,7 +11,7 @@ import javafx.scene.Scene;
 
 import java.io.IOException;
 
-public class MultiplayerLobbyController extends Setter {
+public class MultiplayerLobbyController extends SceneStageSetter {
 
     public void playGameServer(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/game.fxml"));
@@ -18,10 +19,14 @@ public class MultiplayerLobbyController extends Setter {
 
         scene = new Scene(root, Resoluciones.MENU_SCREEN_WIDTH, Resoluciones.MENU_SCREEN_HEIGHT);
 
-        GameController gameController = loader.getController();
-        gameController.setScene(scene);
-        gameController.setStage(stage);
+        //enviar Paquete Al Servidor Para Conectarnos;
 
+        //recibimos El Paquete Del Servidor Y Asignamos El Id A la nave
+
+        //esperar a que el servidor nos diga que ha comenzado el juego
+
+        GameController gameController = loader.getController();
+        //gameController.beforeStartGame(stage, scene, IPQUEHASRECIBIDODELSERVIDOR, ipServer);
 
         stage.setTitle(Strings.NOMBRE_JUEGO);
         stage.setScene(scene);

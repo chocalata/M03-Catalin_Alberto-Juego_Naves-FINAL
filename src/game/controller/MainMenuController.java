@@ -2,7 +2,8 @@ package game.controller;
 
 import StatVars.Resoluciones;
 import StatVars.Strings;
-import game.Setter;
+import game.GameSetter;
+import game.SceneStageSetter;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,18 +12,18 @@ import javafx.scene.Scene;
 
 import java.io.IOException;
 
-public class MainMenuController extends Setter {
-
+public class MainMenuController extends SceneStageSetter {
+    private boolean isMultiplayer;
     @FXML public void playGame() throws IOException {
+        isMultiplayer = false;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/game.fxml"));
         Parent root = loader.load();
 
         scene = new Scene(root, stage.getWidth(), stage.getHeight());
 
         GameController gameController = loader.getController();
-        gameController.setScene(scene);
-        gameController.setStage(stage);
-        gameController.setIdNave(1/*EL ID QUE ME DARÁ EL SERVIDOR PARA LA NAVE.*/);
+        gameController.beforeStartGame(stage,scene, 1, null);
+        gameController.start(isMultiplayer);
 
         stage.setTitle(Strings.NOMBRE_JUEGO);
         stage.setScene(scene);
@@ -37,9 +38,11 @@ public class MainMenuController extends Setter {
 
         scene = new Scene(root, Resoluciones.MENU_SCREEN_WIDTH, Resoluciones.MENU_SCREEN_HEIGHT);
 
-        MultiplayerMenuController gameController = loader.getController();
-        gameController.setScene(scene);
-        gameController.setStage(stage);
+        MultiplayerMenuController multiplayerMenuController = loader.getController();
+        multiplayerMenuController.setScene(scene);
+        multiplayerMenuController.setStage(stage);
+
+
         stage.setTitle(Strings.NOMBRE_JUEGO);
         stage.setScene(scene);
         stage.show();

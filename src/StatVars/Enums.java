@@ -1,7 +1,7 @@
 package StatVars;
 
 public class Enums {
-    public static enum BulletState {
+    public enum BulletState {
         SHOOTING, TO_REMOVE
     }
 }
