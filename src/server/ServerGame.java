@@ -1,18 +1,33 @@
 package server;
 
+import javafx.scene.transform.Transform;
+import server.model.ClientData;
+import server.toRecive.NaveToReciveServer;
+import transformToJsonOrClass.Transformer;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ServerGame {
-    DatagramSocket socket;
 
-    int numeroRandom;
+    private DatagramSocket socket;
+
+    private ArrayList<NaveToReciveServer> naves;
+
+    private Map<InetAddress, ClientData> mapIdNaves;
+
+
     public void init(int port) throws SocketException {
         socket = new DatagramSocket(port);
+        naves = new ArrayList<>();
+        mapIdNaves = new HashMap<>();
     }
 
     public void runServer() throws IOException {
@@ -23,36 +38,115 @@ public class ServerGame {
 
 
         //el servidor atén el port indefinidament
-        while(true){
+        while(true/* No esten todos los jugadores */){
+
             //creació del paquet per rebre les dades
             DatagramPacket packet = new DatagramPacket(receivingData, 1024);
             //espera de les dades
             socket.receive(packet);
-            //processament de les dades rebudes i obtenció de la resposta
-            sendingData = processData(packet.getData(), packet.getLength());
             //obtenció de l'adreça del client
+
             clientIP = packet.getAddress();
             //obtenció del port del client
             clientPort = packet.getPort();
-            //creació del paquet per enviar la resposta
-            packet = new DatagramPacket(sendingData, sendingData.length,
-            clientIP, clientPort);
-            //enviament de la resposta
-            socket.send(packet);
+
+            byte[] ss= clientIP.getAddress();
+
+            //processament de les dades rebudes i obtenció de la resposta
+            byte[] respuesta = processData(packet);
+
+            if (!new String(respuesta, Charset.defaultCharset()).equals("Starting")) {
+                //creació del paquet per enviar la resposta
+                packet = new DatagramPacket(respuesta, respuesta.length, clientIP, clientPort);
+                //System.out.println(new String(respuesta, Charset.defaultCharset()));
+
+                //enviament de la resposta
+                socket.send(packet);
+            }
         }
     }
 
-    private byte[] processData(byte[] data, int length) {
-        int numero = ByteBuffer.wrap(data).getInt(); //d'array de bytes a integer
-        if(numero > numeroRandom){
-            System.out.println(numero + " es más grande que " + numeroRandom);
-            return ByteBuffer.allocate(4).putInt(1).array(); //de integer a array de bytes;
-        }else if(numero < numeroRandom){
-            System.out.println(numero + " es más pequeño que " + numeroRandom);
-            return ByteBuffer.allocate(4).putInt(-1).array(); //de integer a array de bytes;
-        }else {
-            System.out.println("Has GANADO");
-            return ByteBuffer.allocate(4).putInt(0).array(); //de integer a array de bytes;
+    private byte[] processData(DatagramPacket packet) {
+
+        /**
+         * 1. Esperar a recibir todos los JSON
+         * 2. Montar el Json para recoger los datos
+         * 3. Comparar Todos los Json
+         * 4. Montar un Json Actualizado
+         * 5. devolver un byte[]
+         */
+        switch (Transformer.arrayByteToString(packet.getData())){
+            case "":  return getIdOfNaveClient(packet).getBytes();
+            case "Start" : return signalToStart().getBytes();
+            default: return updateJsonGame(packet.getData()).getBytes();
+
         }
+
+
+//        int numero = ByteBuffer.wrap(data).getInt(); //d'array de bytes a integer
+//        if(numero > numeroRandom){
+//            System.out.println(numero + " es más grande que " + numeroRandom);
+//            return ByteBuffer.allocate(4).putInt(1).array(); //de integer a array de bytes;
+//        }else if(numero < numeroRandom){
+//            System.out.println(numero + " es más pequeño que " + numeroRandom);
+//            return ByteBuffer.allocate(4).putInt(-1).array(); //de integer a array de bytes;
+//        }else {
+//            System.out.println("Has GANADO");
+//            return ByteBuffer.allocate(4).putInt(0).array(); //de integer a array de bytes;
+//        }
     }
+
+
+    private String updateJsonGame(byte[] data) {
+        NaveToReciveServer naveRecibida = Transformer.jsonToNaveToReciveServer(Transformer.arrayByteToString(data));
+        if(naves.contains(naveRecibida)){
+            naves.set(naves.indexOf(naveRecibida), naveRecibida);
+        }else {
+            naves.add(naveRecibida);
+        }
+
+        return Transformer.classToJson(naves);
+    }
+
+    private String signalToStart() {
+        sendAll("Start");
+        return "Starting";
+    }
+
+
+
+    private String getIdOfNaveClient(DatagramPacket packet){
+        /**
+         * 1. Asignar ID a la Nave.
+         * (Num 1-4)
+         *
+         */
+
+        if (!mapIdNaves.containsKey(packet.getAddress()) && mapIdNaves.size() <= 4) {
+            mapIdNaves.put(packet.getAddress(),new ClientData(mapIdNaves.size()+1, packet.getPort()));
+            return String.valueOf(mapIdNaves.size());
+        } else if (mapIdNaves.containsKey(packet.getAddress())) {
+            return String.valueOf(mapIdNaves.get(packet.getAddress()).getIdNave());
+        } else return String.valueOf(0);
+    }
+
+
+    private void sendAll(String signal) {
+        mapIdNaves.forEach((ip,clientData)-> {
+            try {
+                socket.send(new DatagramPacket(signal.getBytes(), signal.getBytes().length, ip, clientData.getPort() ));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+    }
+
+
+
+    //     public void checkJsonCecived(){
+    //        System.out.println(updateJsonGame("{\"idNave\":1,\"navePosX\":500.0,\"navePosY\":500.0,\"naveCursorPosX\":1381.6,\"naveCursorPosY\":17.6,\"angle\":59.0,\"naveArmaBalas\":[{\"posX\":535.9119184743529,\"posY\":516.6606853405079,\"idNave\":1},{\"posX\":535.9119184743529,\"posY\":516.6606853405079,\"idNave\":1},{\"posX\":535.9119184743529,\"posY\":516.6606853405079,\"idNave\":1}],\"timer\":{\"max\":10.0,\"time\":2.299999999079997},\"prueba\":0}\n".getBytes()));
+    //        System.out.println(updateJsonGame("{\"idNave\":2,\"navePosX\":500.0,\"navePosY\":500.0,\"naveCursorPosX\":1381.6,\"naveCursorPosY\":17.6,\"angle\":59.0,\"naveArmaBalas\":[{\"posX\":535.9119184743529,\"posY\":516.6606853405079,\"idNave\":1},{\"posX\":535.9119184743529,\"posY\":516.6606853405079,\"idNave\":1},{\"posX\":535.9119184743529,\"posY\":516.6606853405079,\"idNave\":1}],\"timer\":{\"max\":10.0,\"time\":2.299999999079997},\"prueba\":0}\n".getBytes()));
+    //
+    //    }
 }
