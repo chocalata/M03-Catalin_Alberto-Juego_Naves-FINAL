@@ -70,7 +70,7 @@ public class GameController extends GameSetter implements Initializable {
                 graphicsContext.clearRect(0,0, stage.getWidth(), stage.getHeight());
 
                 dataToSend.setData(nave, time);
-                System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + Transformer.classToJson(dataToSend).getBytes().length);
+                System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + Transformer.classToJson(dataToSend));
 
                 nave.render();
 
@@ -81,6 +81,7 @@ public class GameController extends GameSetter implements Initializable {
     private void startMultiplayer(){
         final long startNanoTime = System.nanoTime();
 
+        //POR AQUI: AL COMENZAR EL JUEGO EN LINEA QUE HAGA ALL LO QUE TENGA QUE HACER
         new AnimationTimer() {
             public void handle(long currentNanoTime)
             {

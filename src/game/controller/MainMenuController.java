@@ -13,17 +13,15 @@ import javafx.scene.Scene;
 import java.io.IOException;
 
 public class MainMenuController extends SceneStageSetter {
-    private boolean isMultiplayer;
     @FXML public void playGame() throws IOException {
-        isMultiplayer = false;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/game.fxml"));
         Parent root = loader.load();
 
         scene = new Scene(root, stage.getWidth(), stage.getHeight());
 
         GameController gameController = loader.getController();
-        gameController.beforeStartGame(stage,scene, 1, null);
-        gameController.start(isMultiplayer);
+        gameController.beforeStartGame(stage,scene, null);
+        gameController.start(false);
 
         stage.setTitle(Strings.NOMBRE_JUEGO);
         stage.setScene(scene);

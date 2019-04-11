@@ -9,6 +9,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
+import transformToJsonOrClass.Transformer;
+
+import java.io.UnsupportedEncodingException;
+import java.net.DatagramPacket;
 
 public class GameSetter extends SceneStageSetter {
     protected GraphicsContext graphicsContext;
@@ -23,7 +27,16 @@ public class GameSetter extends SceneStageSetter {
 
     protected String ipServer;
 
-    public void beforeStartGame(Stage stage, Scene scene, int idNave, String ipServer) {
+    public void beforeStartGame(Stage stage, Scene scene, DatagramPacket packet) {
+        int idNave = 1;
+        if(packet != null) {
+            try {
+                idNave = Integer.parseInt(Transformer.packetDataToString(packet));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
         setScene(scene);
 
         setStage(stage);

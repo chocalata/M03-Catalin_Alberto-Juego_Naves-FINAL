@@ -1,16 +1,15 @@
 package server;
 
-import javafx.scene.transform.Transform;
 import server.model.ClientData;
 import server.toRecive.NaveToReciveServer;
 import transformToJsonOrClass.Transformer;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,21 +42,20 @@ public class ServerGame {
             //creació del paquet per rebre les dades
             DatagramPacket packet = new DatagramPacket(receivingData, 1024);
             //espera de les dades
-            socket.receive(packet);
-            //obtenció de l'adreça del client
 
+            socket.receive(packet);
+
+            //obtenció de l'adreça del client
             clientIP = packet.getAddress();
             //obtenció del port del client
             clientPort = packet.getPort();
 
-            byte[] ss= clientIP.getAddress();
-
             //processament de les dades rebudes i obtenció de la resposta
-            byte[] respuesta = processData(packet);
+            sendingData = processData(packet);
 
-            if (!new String(respuesta, Charset.defaultCharset()).equals("Starting")) {
+            if (!new String(sendingData).equals("Starting")) {
                 //creació del paquet per enviar la resposta
-                packet = new DatagramPacket(respuesta, respuesta.length, clientIP, clientPort);
+                packet = new DatagramPacket(sendingData, sendingData.length, clientIP, clientPort);
                 //System.out.println(new String(respuesta, Charset.defaultCharset()));
 
                 //enviament de la resposta
@@ -75,13 +73,19 @@ public class ServerGame {
          * 4. Montar un Json Actualizado
          * 5. devolver un byte[]
          */
-        switch (Transformer.arrayByteToString(packet.getData())){
-            case "":  return getIdOfNaveClient(packet).getBytes();
-            case "Start" : return signalToStart().getBytes();
-            default: return updateJsonGame(packet.getData()).getBytes();
+        try {
+            switch (Transformer.packetDataToString(packet)) {
+                case "Connect":
+                    return getIdOfNaveClient(packet).getBytes();
+                case "Start":
+                    return signalToStart().getBytes();
+                default: return updateJsonGame(packet).getBytes();
 
+            }
+        } catch (UnsupportedEncodingException e){
+            e.printStackTrace();
+            return null;
         }
-
 
 //        int numero = ByteBuffer.wrap(data).getInt(); //d'array de bytes a integer
 //        if(numero > numeroRandom){
@@ -97,8 +101,8 @@ public class ServerGame {
     }
 
 
-    private String updateJsonGame(byte[] data) {
-        NaveToReciveServer naveRecibida = Transformer.jsonToNaveToReciveServer(Transformer.arrayByteToString(data));
+    private String updateJsonGame(DatagramPacket packet) throws UnsupportedEncodingException {
+        NaveToReciveServer naveRecibida = Transformer.jsonToNaveToReciveServer(Transformer.packetDataToString(packet));
         if(naves.contains(naveRecibida)){
             naves.set(naves.indexOf(naveRecibida), naveRecibida);
         }else {
@@ -124,7 +128,7 @@ public class ServerGame {
 
         if (!mapIdNaves.containsKey(packet.getAddress()) && mapIdNaves.size() <= 4) {
             mapIdNaves.put(packet.getAddress(),new ClientData(mapIdNaves.size()+1, packet.getPort()));
-            return String.valueOf(mapIdNaves.size());
+            return String.valueOf(mapIdNaves.size()+1);
         } else if (mapIdNaves.containsKey(packet.getAddress())) {
             return String.valueOf(mapIdNaves.get(packet.getAddress()).getIdNave());
         } else return String.valueOf(0);

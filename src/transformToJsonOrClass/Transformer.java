@@ -3,6 +3,9 @@ package transformToJsonOrClass;
 import com.google.gson.Gson;
 import server.toRecive.NaveToReciveServer;
 
+import java.io.UnsupportedEncodingException;
+import java.net.DatagramPacket;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
@@ -15,8 +18,11 @@ public abstract class Transformer {
         return new Gson().fromJson(json, ArrayList.class);
     }
 
-    public static String arrayByteToString(byte[] data) {
-        return new String(data, StandardCharsets.UTF_8);
+    public static String packetDataToString(DatagramPacket packet) throws UnsupportedEncodingException {
+        //return String.valueOf(new String(data, StandardCharsets.UTF_8));
+        return new String(packet.getData(),
+                packet.getOffset(),
+                packet.getLength(), "UTF-8");
     }
 
     public static NaveToReciveServer jsonToNaveToReciveServer(String json) {
