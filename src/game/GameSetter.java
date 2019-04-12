@@ -11,8 +11,10 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import transformToJsonOrClass.Transformer;
 
+import javax.xml.crypto.Data;
 import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 
 public class GameSetter extends SceneStageSetter {
     protected GraphicsContext graphicsContext;
@@ -25,13 +27,19 @@ public class GameSetter extends SceneStageSetter {
 
     protected Nave nave;
 
-    protected String ipServer;
+    protected InetAddress ipServer;
+
+    protected int portServer;
+
+    protected DatagramPacket packet;
 
     public void beforeStartGame(Stage stage, Scene scene, DatagramPacket packet) {
+        this.packet = packet;
         int idNave = 1;
         if(packet != null) {
             try {
                 idNave = Integer.parseInt(Transformer.packetDataToString(packet));
+                System.out.println(idNave);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -47,8 +55,8 @@ public class GameSetter extends SceneStageSetter {
 
         setControls();
 
-        if(ipServer != null) {
-            setIpServer(ipServer);
+        if(packet != null) {
+            setIpServer(packet);
         }
     }
 
@@ -65,7 +73,10 @@ public class GameSetter extends SceneStageSetter {
         nave.setImagenRotada(nave.getImgNave().getImage());
     }
 
-    private void setIpServer(String ipServer) { this.ipServer = ipServer; }
+    private void setIpServer(DatagramPacket packet) {
+        this.ipServer = packet.getAddress();
+        this.portServer = packet.getPort();
+    }
 
     private void setControls() {
         scene.setOnMouseReleased(event->{

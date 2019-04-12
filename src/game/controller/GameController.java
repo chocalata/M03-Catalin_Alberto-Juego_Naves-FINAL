@@ -15,10 +15,18 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import game.model.Nave;
+import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
+import server.toRecive.NaveToReciveServer;
 import transformToJsonOrClass.Transformer;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class GameController extends GameSetter implements Initializable {
@@ -51,7 +59,11 @@ public class GameController extends GameSetter implements Initializable {
 
     public void start(boolean isMultiplayer){
         if(isMultiplayer){
-            startMultiplayer();
+            try {
+                startMultiplayer();
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
         }else {
             startSigle();
         }
@@ -78,15 +90,30 @@ public class GameController extends GameSetter implements Initializable {
         }.start();
     }
 
-    private void startMultiplayer(){
-        final long startNanoTime = System.nanoTime();
+    private void startMultiplayer() throws SocketException {
+        DatagramSocket socket = new DatagramSocket();
 
         //POR AQUI: AL COMENZAR EL JUEGO EN LINEA QUE HAGA ALL LO QUE TENGA QUE HACER
         new AnimationTimer() {
             public void handle(long currentNanoTime)
             {
+
                 nave.update();
-                //recibeDatos;
+
+                dataToSend.setData(nave, time);
+
+                String sendData = Transformer.classToJson(dataToSend);
+                packet = new DatagramPacket(sendData.getBytes(),
+                        sendData.getBytes().length,
+                        ipServer,
+                        portServer);
+                try {
+                    socket.send(packet);
+                    socket.receive(packet);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                updateNavesRecibidas(packet);
                 //navesRecibidas.update();
                 checkCollisions();
                 dataToSend.setData(nave, time);
@@ -100,6 +127,16 @@ public class GameController extends GameSetter implements Initializable {
 
             }
         }.start();
+    }
+
+    private void updateNavesRecibidas(DatagramPacket packet){
+        try {
+            ArrayList<NaveToReciveServer> navesRecived = Transformer.jsonToArrayListNaves(Transformer.packetDataToString(packet));
+            navesRecived.forEach(nave-> System.out.println(nave.toString()));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void checkCollisions(){

@@ -1,6 +1,7 @@
 package transformToJsonOrClass;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import server.toRecive.NaveToReciveServer;
 
 import java.io.UnsupportedEncodingException;
@@ -14,8 +15,8 @@ public abstract class Transformer {
         return new Gson().toJson(object);
     }
 
-    public static ArrayList jsonToArrayListNaves(String json) {
-        return new Gson().fromJson(json, ArrayList.class);
+    public static ArrayList<NaveToReciveServer> jsonToArrayListNaves(String json) {
+        return new Gson().fromJson(json, new TypeToken<ArrayList<NaveToReciveServer>>(){}.getType());
     }
 
     public static String packetDataToString(DatagramPacket packet) throws UnsupportedEncodingException {

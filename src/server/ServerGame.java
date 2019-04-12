@@ -79,7 +79,8 @@ public class ServerGame {
                     return getIdOfNaveClient(packet).getBytes();
                 case "Start":
                     return signalToStart().getBytes();
-                default: return updateJsonGame(packet).getBytes();
+                default:
+                    return updateJsonGame(packet).getBytes();
 
             }
         } catch (UnsupportedEncodingException e){
@@ -103,12 +104,13 @@ public class ServerGame {
 
     private String updateJsonGame(DatagramPacket packet) throws UnsupportedEncodingException {
         NaveToReciveServer naveRecibida = Transformer.jsonToNaveToReciveServer(Transformer.packetDataToString(packet));
+        System.out.println(naveRecibida.toString());
         if(naves.contains(naveRecibida)){
             naves.set(naves.indexOf(naveRecibida), naveRecibida);
         }else {
             naves.add(naveRecibida);
         }
-
+        naves.forEach(nave-> System.out.println(nave.toString()));
         return Transformer.classToJson(naves);
     }
 
@@ -128,7 +130,7 @@ public class ServerGame {
 
         if (!mapIdNaves.containsKey(packet.getAddress()) && mapIdNaves.size() <= 4) {
             mapIdNaves.put(packet.getAddress(),new ClientData(mapIdNaves.size()+1, packet.getPort()));
-            return String.valueOf(mapIdNaves.size()+1);
+            return String.valueOf(mapIdNaves.size());
         } else if (mapIdNaves.containsKey(packet.getAddress())) {
             return String.valueOf(mapIdNaves.get(packet.getAddress()).getIdNave());
         } else return String.valueOf(0);

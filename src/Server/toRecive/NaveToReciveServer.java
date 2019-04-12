@@ -54,4 +54,9 @@ public class NaveToReciveServer {
     public boolean equals(Object obj) {
         return idNave == ((NaveToReciveServer) obj).getIdNave();
     }
+
+    @Override
+    public String toString() {
+        return "ID: " + idNave + "\nAngulo: " + angle;
+    }
 }
