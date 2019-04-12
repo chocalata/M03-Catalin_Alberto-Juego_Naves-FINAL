@@ -31,7 +31,7 @@ public class ServerGame {
 
     public void runServer() throws IOException {
         byte [] receivingData = new byte[1024];
-        byte [] sendingData;
+        byte [] sendingData = new byte[1024];
         InetAddress clientIP;
         int clientPort;
 
@@ -52,6 +52,7 @@ public class ServerGame {
 
             //processament de les dades rebudes i obtenció de la resposta
             sendingData = processData(packet);
+            System.out.println(sendingData.length);
 
             if (!new String(sendingData).equals("Starting")) {
                 //creació del paquet per enviar la resposta
@@ -104,7 +105,6 @@ public class ServerGame {
 
     private String updateJsonGame(DatagramPacket packet) throws UnsupportedEncodingException {
         NaveToReciveServer naveRecibida = Transformer.jsonToNaveToReciveServer(Transformer.packetDataToString(packet));
-        System.out.println(naveRecibida.toString());
         if(naves.contains(naveRecibida)){
             naves.set(naves.indexOf(naveRecibida), naveRecibida);
         }else {
@@ -118,7 +118,6 @@ public class ServerGame {
         sendAll("Start");
         return "Starting";
     }
-
 
 
     private String getIdOfNaveClient(DatagramPacket packet){

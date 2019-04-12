@@ -109,19 +109,19 @@ public class GameController extends GameSetter implements Initializable {
                         portServer);
                 try {
                     socket.send(packet);
+
+                    packet = new DatagramPacket(new byte[1024], 1024);
                     socket.receive(packet);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 updateNavesRecibidas(packet);
-                //navesRecibidas.update();
+
                 checkCollisions();
+
                 dataToSend.setData(nave, time);
-                System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + Transformer.classToJson(dataToSend).getBytes().length);
-                //mandaDatos(dataToSend);
 
                 graphicsContext.clearRect(0,0, stage.getWidth(), stage.getHeight());
-
 
                 nave.render();
 
@@ -131,6 +131,7 @@ public class GameController extends GameSetter implements Initializable {
 
     private void updateNavesRecibidas(DatagramPacket packet){
         try {
+            System.out.println(Transformer.packetDataToString(packet).getBytes().length);
             ArrayList<NaveToReciveServer> navesRecived = Transformer.jsonToArrayListNaves(Transformer.packetDataToString(packet));
             navesRecived.forEach(nave-> System.out.println(nave.toString()));
         } catch (UnsupportedEncodingException e) {
