@@ -1,26 +1,26 @@
-package server.toRecive;
+package formatClasses;
 
 import game.model.toSend.BalaToSend;
 
 import java.util.ArrayList;
 
-public class NaveToReciveServer {
+public class NaveToRecive {
     // Identificador de la nave
-    private int idNave;
+    protected int idNave;
 
     //posicion nave
-    private double navePosX;
-    private double navePosY;
+    protected double navePosX;
+    protected double navePosY;
 
     //posiciones cursor
-    private double naveCursorPosX;
-    private double naveCursorPosY;
+    protected double naveCursorPosX;
+    protected double naveCursorPosY;
 
     //angulo (nave y bala)
-    private double angle;
+    protected double angle;
 
     //balas
-    private ArrayList<BalaToSend> naveArmaBalas;
+    protected ArrayList<BalaToSend> naveArmaBalas;
 
     public int getIdNave() {
         return idNave;
@@ -52,7 +52,7 @@ public class NaveToReciveServer {
 
     @Override
     public boolean equals(Object obj) {
-        return idNave == ((NaveToReciveServer) obj).getIdNave();
+        return idNave == ((NaveToRecive) obj).getIdNave();
     }
 
     @Override

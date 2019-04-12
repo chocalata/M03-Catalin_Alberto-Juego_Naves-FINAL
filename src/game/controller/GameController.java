@@ -4,21 +4,13 @@ import StatVars.Resoluciones;
 import game.GameSetter;
 import game.model.toSend.NaveToSend;
 import javafx.animation.AnimationTimer;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import game.model.Nave;
-import javafx.scene.transform.Transform;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import server.toRecive.NaveToReciveServer;
-import transformToJsonOrClass.Transformer;
+import formatClasses.NaveToRecive;
+import Transformmer.Transformer;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -131,9 +123,13 @@ public class GameController extends GameSetter implements Initializable {
 
     private void updateNavesRecibidas(DatagramPacket packet){
         try {
-            System.out.println(Transformer.packetDataToString(packet).getBytes().length);
-            ArrayList<NaveToReciveServer> navesRecived = Transformer.jsonToArrayListNaves(Transformer.packetDataToString(packet));
-            navesRecived.forEach(nave-> System.out.println(nave.toString()));
+            ArrayList<NaveToRecive> navesRecived = Transformer.jsonToArrayListNaves(Transformer.packetDataToString(packet));
+            navesRecived.forEach(nave->{
+                if(this.nave.getId() != nave.getIdNave()){
+                    graphicsContext.drawImage(new Image("game/img/naves/navePlayer_" + nave.getIdNave() + ".png"), nave.getNavePosX(), nave.getNaveCursorPosY());
+                }
+            });
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

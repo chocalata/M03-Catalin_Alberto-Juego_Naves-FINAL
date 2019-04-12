@@ -1,8 +1,8 @@
 package server;
 
 import server.model.ClientData;
-import server.toRecive.NaveToReciveServer;
-import transformToJsonOrClass.Transformer;
+import formatClasses.NaveToRecive;
+import Transformmer.Transformer;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -18,7 +18,7 @@ public class ServerGame {
 
     private DatagramSocket socket;
 
-    private ArrayList<NaveToReciveServer> naves;
+    private ArrayList<NaveToRecive> naves;
 
     private Map<InetAddress, ClientData> mapIdNaves;
 
@@ -104,7 +104,7 @@ public class ServerGame {
 
 
     private String updateJsonGame(DatagramPacket packet) throws UnsupportedEncodingException {
-        NaveToReciveServer naveRecibida = Transformer.jsonToNaveToReciveServer(Transformer.packetDataToString(packet));
+        NaveToRecive naveRecibida = Transformer.jsonToNaveToRecive(Transformer.packetDataToString(packet));
         if(naves.contains(naveRecibida)){
             naves.set(naves.indexOf(naveRecibida), naveRecibida);
         }else {

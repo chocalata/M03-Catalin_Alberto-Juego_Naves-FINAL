@@ -9,9 +9,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
-import transformToJsonOrClass.Transformer;
+import Transformmer.Transformer;
 
-import javax.xml.crypto.Data;
 import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;

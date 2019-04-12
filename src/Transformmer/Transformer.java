@@ -1,13 +1,11 @@
-package transformToJsonOrClass;
+package Transformmer;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import server.toRecive.NaveToReciveServer;
+import formatClasses.NaveToRecive;
 
 import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public abstract class Transformer {
@@ -15,8 +13,8 @@ public abstract class Transformer {
         return new Gson().toJson(object);
     }
 
-    public static ArrayList<NaveToReciveServer> jsonToArrayListNaves(String json) {
-        return new Gson().fromJson(json, new TypeToken<ArrayList<NaveToReciveServer>>(){}.getType());
+    public static ArrayList<NaveToRecive> jsonToArrayListNaves(String json) {
+        return new Gson().fromJson(json, new TypeToken<ArrayList<NaveToRecive>>(){}.getType());
     }
 
     public static String packetDataToString(DatagramPacket packet) throws UnsupportedEncodingException {
@@ -26,7 +24,7 @@ public abstract class Transformer {
                 packet.getLength(), "UTF-8");
     }
 
-    public static NaveToReciveServer jsonToNaveToReciveServer(String json) {
-        return new Gson().fromJson(json, NaveToReciveServer.class);
+    public static NaveToRecive jsonToNaveToRecive(String json) {
+        return new Gson().fromJson(json, NaveToRecive.class);
     }
 }
