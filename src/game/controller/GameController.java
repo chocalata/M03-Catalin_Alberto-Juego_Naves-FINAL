@@ -106,8 +106,6 @@ public class GameController extends GameSetter implements Initializable {
         checkNaveInScreen();
         checkBalaInScreen();
 
-
-
     }
 
     private void checkBalaInScreen() {

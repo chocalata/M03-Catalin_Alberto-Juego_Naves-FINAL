@@ -42,8 +42,8 @@ public class MultiplayerMenuController extends SceneStageSetter {
         socket = new DatagramSocket();
 
         try{
-            String ip = "localhost";//et_ipServer.getText().split(":")[0];
-            int port = 5568;//Integer.parseInt(et_ipServer.getText().split(":")[1]);
+            String ip = et_ipServer.getText().split(":")[0];//192.168.253.215
+            int port = Integer.parseInt(et_ipServer.getText().split(":")[1]);//5568
 
             System.out.println("IP: " + ip + "\nPORT: " + port);
 
