@@ -19,6 +19,8 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class GameController extends GameSetter implements Initializable {
@@ -30,6 +32,8 @@ public class GameController extends GameSetter implements Initializable {
 
     private double time;
 
+    private Map<Integer, Image> otrasNaves;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -40,6 +44,8 @@ public class GameController extends GameSetter implements Initializable {
         //Al ser 60 fotogramas por segundo, quiere decir que entre fotograma
         //y fotograma pasan 0.017 segundos más o menos.
         time = 0.01666666666;
+
+        otrasNaves = new HashMap<>();
     }
 
     @Override
@@ -90,6 +96,8 @@ public class GameController extends GameSetter implements Initializable {
             public void handle(long currentNanoTime)
             {
 
+                graphicsContext.clearRect(0,0, stage.getWidth(), stage.getHeight());
+
                 nave.update();
 
                 dataToSend.setData(nave, time);
@@ -113,8 +121,6 @@ public class GameController extends GameSetter implements Initializable {
 
                 dataToSend.setData(nave, time);
 
-                graphicsContext.clearRect(0,0, stage.getWidth(), stage.getHeight());
-
                 nave.render();
 
             }
@@ -125,8 +131,12 @@ public class GameController extends GameSetter implements Initializable {
         try {
             ArrayList<NaveToRecive> navesRecived = Transformer.jsonToArrayListNaves(Transformer.packetDataToString(packet));
             navesRecived.forEach(nave->{
-                if(this.nave.getId() != nave.getIdNave()){
-                    graphicsContext.drawImage(new Image("game/img/naves/navePlayer_" + nave.getIdNave() + ".png"), nave.getNavePosX(), nave.getNaveCursorPosY());
+                if(this.nave.getId() != nave.getIdNave()) {
+                    if (!otrasNaves.containsKey(nave.getIdNave())) {
+                        otrasNaves.put(nave.getIdNave(), new Image("game/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
+                    }
+                    System.out.println(nave.getNavePosX() + " " + nave.getNavePosY());
+                    graphicsContext.drawImage(otrasNaves.get(nave.getIdNave()), nave.getNavePosX(), nave.getNavePosY());
                 }
             });
 
