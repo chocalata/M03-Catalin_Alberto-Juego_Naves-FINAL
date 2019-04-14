@@ -1,13 +1,17 @@
 package game.controller;
 
+import StatVars.Packets;
 import StatVars.Resoluciones;
 import game.GameSetter;
 import game.model.toSend.NaveToSend;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import formatClasses.NaveToRecive;
 import Transformmer.Transformer;
@@ -32,7 +36,12 @@ public class GameController extends GameSetter implements Initializable {
 
     private double time;
 
-    private Map<Integer, Image> otrasNaves;
+    private Map<Integer, Image> imagenRotadaOtrasNaves;
+    private Map<Integer, ImageView> imagenOtrasNaves;
+    private SnapshotParameters snapshotParameters;
+
+
+    private byte[] recivingData;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -45,7 +54,12 @@ public class GameController extends GameSetter implements Initializable {
         //y fotograma pasan 0.017 segundos más o menos.
         time = 0.01666666666;
 
-        otrasNaves = new HashMap<>();
+        recivingData = new byte[Packets.PACKET_LENGHT];
+
+        imagenOtrasNaves = new HashMap<>();
+        imagenRotadaOtrasNaves = new HashMap<>();
+        snapshotParameters = new SnapshotParameters();
+        snapshotParameters.setFill(Color.TRANSPARENT);
     }
 
     @Override
@@ -110,7 +124,7 @@ public class GameController extends GameSetter implements Initializable {
                 try {
                     socket.send(packet);
 
-                    packet = new DatagramPacket(new byte[1024], 1024);
+                    packet = new DatagramPacket(recivingData, Packets.PACKET_LENGHT);
                     socket.receive(packet);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -128,15 +142,20 @@ public class GameController extends GameSetter implements Initializable {
     }
 
     private void updateNavesRecibidas(DatagramPacket packet){
+
         try {
             ArrayList<NaveToRecive> navesRecived = Transformer.jsonToArrayListNaves(Transformer.packetDataToString(packet));
             navesRecived.forEach(nave->{
                 if(this.nave.getId() != nave.getIdNave()) {
-                    if (!otrasNaves.containsKey(nave.getIdNave())) {
-                        otrasNaves.put(nave.getIdNave(), new Image("game/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
+                    if (!imagenOtrasNaves.containsKey(nave.getIdNave())) {
+                        imagenOtrasNaves.put(nave.getIdNave(), new ImageView("game/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
+                        imagenRotadaOtrasNaves.put(nave.getIdNave(), new Image("game/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
+                        rotateNaveRecibidas(nave.getIdNave(), nave.getAngle());
+                        graphicsContext.drawImage(imagenRotadaOtrasNaves.get(nave.getIdNave()), nave.getNavePosX(), nave.getNavePosY());
+                    }else {
+                        rotateNaveRecibidas(nave.getIdNave(), nave.getAngle());
+                        graphicsContext.drawImage(imagenRotadaOtrasNaves.get(nave.getIdNave()), nave.getNavePosX(), nave.getNavePosY());
                     }
-                    System.out.println(nave.getNavePosX() + " " + nave.getNavePosY());
-                    graphicsContext.drawImage(otrasNaves.get(nave.getIdNave()), nave.getNavePosX(), nave.getNavePosY());
                 }
             });
 
@@ -144,6 +163,11 @@ public class GameController extends GameSetter implements Initializable {
             e.printStackTrace();
         }
 
+    }
+
+    private void rotateNaveRecibidas(int id,double angle){
+        imagenOtrasNaves.get(id).setRotate(angle);
+        imagenRotadaOtrasNaves.put(id, imagenOtrasNaves.get(id).snapshot(snapshotParameters, null));
     }
 
     private void checkCollisions(){

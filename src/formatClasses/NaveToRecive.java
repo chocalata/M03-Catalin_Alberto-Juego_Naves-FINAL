@@ -6,21 +6,21 @@ import java.util.ArrayList;
 
 public class NaveToRecive {
     // Identificador de la nave
-    protected int idNave;
+    private int idNave;
 
     //posicion nave
-    protected double navePosX;
-    protected double navePosY;
+    private double navePosX;
+    private double navePosY;
 
     //posiciones cursor
-    protected double naveCursorPosX;
-    protected double naveCursorPosY;
+    private double naveCursorPosX;
+    private double naveCursorPosY;
 
     //angulo (nave y bala)
-    protected double angle;
+    private double angle;
 
     //balas
-    protected ArrayList<BalaToSend> naveArmaBalas;
+    private ArrayList<BalaToSend> naveArmaBalas;
 
     public int getIdNave() {
         return idNave;

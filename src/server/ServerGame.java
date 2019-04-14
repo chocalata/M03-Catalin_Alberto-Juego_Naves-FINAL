@@ -1,5 +1,6 @@
 package server;
 
+import StatVars.Packets;
 import server.model.ClientData;
 import formatClasses.NaveToRecive;
 import Transformmer.Transformer;
@@ -31,7 +32,7 @@ public class ServerGame {
 
     public void runServer() throws IOException {
         byte [] receivingData = new byte[1024];
-        byte [] sendingData = new byte[1024];
+        byte [] sendingData;
         InetAddress clientIP;
         int clientPort;
 
@@ -40,7 +41,7 @@ public class ServerGame {
         while(true/* No esten todos los jugadores */){
 
             //creació del paquet per rebre les dades
-            DatagramPacket packet = new DatagramPacket(receivingData, 1024);
+            DatagramPacket packet = new DatagramPacket(receivingData, Packets.PACKET_LENGHT);
             //espera de les dades
 
             socket.receive(packet);

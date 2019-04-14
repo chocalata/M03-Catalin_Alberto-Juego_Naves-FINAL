@@ -34,12 +34,6 @@ public class Nave {
 
     public Nave(GraphicsContext graphicsContext, int posX, int posY, int idNave, ImageView imgNave, BooleanProperty upPressed, BooleanProperty downPressed, BooleanProperty rightPressed, BooleanProperty leftPressed, BooleanBinding anyPressed) {
         this.id = idNave;
-        System.out.println(this.id);
-        System.out.println(this.id);
-        System.out.println(this.id);
-        System.out.println(this.id);
-        System.out.println(this.id);
-        System.out.println(this.id);
 
         arma = new Arma(graphicsContext);
         orientation = new Cursor();
