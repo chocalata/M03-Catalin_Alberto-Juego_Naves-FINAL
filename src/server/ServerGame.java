@@ -45,7 +45,7 @@ public class ServerGame {
             //espera de les dades
 
             socket.receive(packet);
-
+            System.out.println(Transformer.packetDataToString(packet));
             //obtenció de l'adreça del client
             clientIP = packet.getAddress();
             //obtenció del port del client
