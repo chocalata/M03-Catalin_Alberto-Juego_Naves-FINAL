@@ -9,11 +9,14 @@ import java.util.ArrayList;
 
 public class Arma {
     ///////UTILIZAR UN ARRAY DE BALAS Y QUE SE QUITEN CUANDO HAYAN SALIDO DE LA PANTALLA
+
+
     private ArrayList<Bala> balas;
 
     private ArrayList<Bala> balasToRemove;
 
     private GraphicsContext graphicsContext;
+    private int idBalaActual;
 
     public Arma(GraphicsContext graphicsContext){
         this.graphicsContext = graphicsContext;
@@ -21,7 +24,15 @@ public class Arma {
     }
 
     public void shoot(double x, double y, double cc, double co, double angle) {
-        balas.add(new Bala(graphicsContext, x, y, cc, co, angle));
+        balas.add(new Bala(graphicsContext, x, y, cc, co, angle, addIdToBala()));
+    }
+
+    private int addIdToBala(){
+        if(idBalaActual > 5){
+            idBalaActual = 0;
+        }
+        idBalaActual++;
+        return idBalaActual;
     }
 
     //borra las balas fuera de pantalla

@@ -33,7 +33,6 @@ public class GameController extends GameSetter implements Initializable {
 
     //Datos que se mandan al servidor
     private NaveToSend dataToSend;
-
     private double time;
 
     private Map<Integer, Image> imagenRotadaOtrasNaves;
@@ -123,17 +122,17 @@ public class GameController extends GameSetter implements Initializable {
                         portServer);
                 try {
                     socket.send(packet);
-
+                    socket.setSoTimeout(500);
                     packet = new DatagramPacket(recivingData, Packets.PACKET_LENGHT);
                     socket.receive(packet);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                updateNavesRecibidas(packet);
+                renderNavesRecibidas(packet);
 
                 checkCollisions();
 
-                dataToSend.setData(nave, time);
+                //dataToSend.setData(nave, time);
 
                 nave.render();
 
@@ -141,7 +140,7 @@ public class GameController extends GameSetter implements Initializable {
         }.start();
     }
 
-    private void updateNavesRecibidas(DatagramPacket packet){
+    private void renderNavesRecibidas(DatagramPacket packet){
 
         try {
             ArrayList<NaveToRecive> navesRecived = Transformer.jsonToArrayListNaves(Transformer.packetDataToString(packet));
@@ -152,17 +151,27 @@ public class GameController extends GameSetter implements Initializable {
                         imagenRotadaOtrasNaves.put(nave.getIdNave(), new Image("game/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
                         rotateNaveRecibidas(nave.getIdNave(), nave.getAngle());
                         graphicsContext.drawImage(imagenRotadaOtrasNaves.get(nave.getIdNave()), nave.getNavePosX(), nave.getNavePosY());
+
+                        nave.getNaveArmaBalas().forEach(bala -> {
+                            graphicsContext.drawImage(new Image("game/img/bala.png"), bala.getPosX(), bala.getPosY());
+                            System.out.println(bala.getPosX() + "  " + bala.getPosY());
+                        });
                     }else {
                         rotateNaveRecibidas(nave.getIdNave(), nave.getAngle());
                         graphicsContext.drawImage(imagenRotadaOtrasNaves.get(nave.getIdNave()), nave.getNavePosX(), nave.getNavePosY());
+                        nave.getNaveArmaBalas().forEach(bala -> {
+                            graphicsContext.drawImage(new Image("game/img/bala.png"), bala.getPosX(), bala.getPosY());
+                            System.out.println(bala.getPosX() + "  " + bala.getPosY());
+                        });
+
                     }
+
                 }
             });
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
     }
 
     private void rotateNaveRecibidas(int id,double angle){

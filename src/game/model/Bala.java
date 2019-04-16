@@ -9,7 +9,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 public class Bala {
+
     private Enums.BulletState state;
+
+    private int idBala;
 
     private double posX;
     private double posY;
@@ -25,10 +28,12 @@ public class Bala {
     
     private boolean added;
 
-    public Bala(GraphicsContext graphicsContext, double x, double y, double cc, double co, double angle){
+    public Bala(GraphicsContext graphicsContext, double x, double y, double cc, double co, double angle, int idBala){
         //Para saber si la he añadido dentro del JSON.
         added = false;
-        
+
+        this.idBala = idBala;
+
         state = Enums.BulletState.SHOOTING;
 
         SnapshotParameters snapshotParameters = new SnapshotParameters();
@@ -96,4 +101,7 @@ public class Bala {
         this.added = added;
     }
 
+    public int getIdBala() {
+        return idBala;
+    }
 }
