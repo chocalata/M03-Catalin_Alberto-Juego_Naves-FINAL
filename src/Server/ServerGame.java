@@ -53,7 +53,7 @@ public class ServerGame {
 
             //processament de les dades rebudes i obtenció de la resposta
             sendingData = processData(packet);
-            System.out.println(sendingData.length);
+            //System.out.println(sendingData.length);
 
             if (!new String(sendingData).equals("Starting")) {
                 //creació del paquet per enviar la resposta
@@ -106,12 +106,15 @@ public class ServerGame {
 
     private String updateJsonGame(DatagramPacket packet) throws UnsupportedEncodingException {
         NaveToRecive naveRecibida = Transformer.jsonToNaveToRecive(Transformer.packetDataToString(packet));
+
+        naveRecibida.getNaveArmaBalas().forEach(balaToSend -> System.out.println(balaToSend.getAngle()));
+
         if(naves.contains(naveRecibida)){
             naves.set(naves.indexOf(naveRecibida), naveRecibida);
         }else {
             naves.add(naveRecibida);
         }
-        naves.forEach(nave-> System.out.println(nave.toString()));
+        //naves.forEach(nave-> System.out.println(nave.toString()));
         return Transformer.classToJson(naves);
     }
 

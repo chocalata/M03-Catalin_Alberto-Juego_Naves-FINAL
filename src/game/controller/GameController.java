@@ -2,6 +2,7 @@ package game.controller;
 
 import StatVars.Packets;
 import StatVars.Resoluciones;
+
 import game.GameSetter;
 import game.model.toSend.NaveToSend;
 import javafx.animation.AnimationTimer;
@@ -12,10 +13,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+
 import javafx.stage.Stage;
 import formatClasses.NaveToRecive;
 import Transformmer.Transformer;
 
+import java.awt.*;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
@@ -42,6 +45,7 @@ public class GameController extends GameSetter implements Initializable {
 
     private ImageView imagenBala;
 
+    private ArrayList<NaveToRecive> navesRecived;
 
     private byte[] recivingData;
 
@@ -94,7 +98,7 @@ public class GameController extends GameSetter implements Initializable {
         new AnimationTimer() {
             public void handle(long currentNanoTime)
             {
-                nave.update();
+                nave.update(false);
 
                 checkCollisions();
 
@@ -119,9 +123,10 @@ public class GameController extends GameSetter implements Initializable {
 
                 graphicsContext.clearRect(0,0, stage.getWidth(), stage.getHeight());
 
-                nave.update();
+                nave.update(checkCollisionNaves());
 
                 dataToSend.setData(nave, time);
+                dataToSend.getNaveArmaBalas().forEach(balaToSend -> System.out.println(balaToSend.getAngle()));
 
                 String sendData = Transformer.classToJson(dataToSend);
                 packet = new DatagramPacket(sendData.getBytes(),
@@ -133,10 +138,16 @@ public class GameController extends GameSetter implements Initializable {
                     socket.setSoTimeout(500);
                     packet = new DatagramPacket(recivingData, Packets.PACKET_LENGHT);
                     socket.receive(packet);
+
+                    navesRecived = Transformer.jsonToArrayListNaves(Transformer.packetDataToString(packet));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                renderNavesRecibidas(packet);
+
+                renderNavesRecibidas();
 
                 checkCollisions();
 
@@ -148,15 +159,12 @@ public class GameController extends GameSetter implements Initializable {
         }.start();
     }
 
-    private void renderNavesRecibidas(DatagramPacket packet){
-
-        try {
-            ArrayList<NaveToRecive> navesRecived = Transformer.jsonToArrayListNaves(Transformer.packetDataToString(packet));
-            navesRecived.forEach(nave->{
-                if(this.nave.getId() != nave.getIdNave()) {
-                    if (!imagenOtrasNaves.containsKey(nave.getIdNave())) {
-                        imagenOtrasNaves.put(nave.getIdNave(), new ImageView("game/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
-                        imagenRotadaOtrasNaves.put(nave.getIdNave(), new Image("game/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
+    private void renderNavesRecibidas(){
+        navesRecived.forEach(nave->{
+            if(this.nave.getId() != nave.getIdNave()) {
+                if (!imagenOtrasNaves.containsKey(nave.getIdNave())) {
+                    imagenOtrasNaves.put(nave.getIdNave(), new ImageView("game/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
+                    imagenRotadaOtrasNaves.put(nave.getIdNave(), new Image("game/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
 //                        rotateNaveRecibida(nave.getIdNave(), nave.getAngle());
 //                        graphicsContext.drawImage(imagenRotadaOtrasNaves.get(nave.getIdNave()), nave.getNavePosX(), nave.getNavePosY());
 //
@@ -167,16 +175,13 @@ public class GameController extends GameSetter implements Initializable {
 //                            System.out.println(bala.getAngle());
 //                        });
 
-                        drawRecivedData(nave);
-                    }else {
-                        drawRecivedData(nave);
-                    }
+                    drawRecivedData(nave);
+                }else {
+                    drawRecivedData(nave);
                 }
-            });
+            }
+        });
 
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
     }
 
 
@@ -203,7 +208,33 @@ public class GameController extends GameSetter implements Initializable {
     private void checkCollisions(){
         checkNaveInScreen();
         checkBalaInScreen();
+        checkCollisionNaves();
 
+    }
+
+    private boolean checkCollisionNaves() {
+        if (navesRecived != null){
+            for (NaveToRecive naveRecived: navesRecived) {
+                if(this.nave.getId() != naveRecived.getIdNave()) {
+                    Rectangle naveRecibida = new Rectangle(
+                            (int) naveRecived.getNavePosX(),
+                            (int) naveRecived.getNavePosY(),
+                            (int) imagenOtrasNaves.get(naveRecived.getIdNave()).getImage().getWidth(),
+                            (int) imagenOtrasNaves.get(naveRecived.getIdNave()).getImage().getHeight()
+                    );
+                    Rectangle naveLocal = new Rectangle(
+                            (int) nave.getPosX(),
+                            (int) nave.getPosY(),
+                            (int) nave.getImgNave().getImage().getWidth(),
+                            (int) nave.getImgNave().getImage().getHeight()
+                    );
+                    if(naveLocal.intersects(naveRecibida)){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private void checkBalaInScreen() {
