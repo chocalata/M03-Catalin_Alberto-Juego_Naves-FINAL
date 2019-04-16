@@ -52,7 +52,7 @@ public class NaveToSend {
         if(!nave.getArma().getBalas().isEmpty()) {
             nave.getArma().getBalas().forEach(bala -> {
                 if(!bala.getAdded()) {
-                    naveArmaBalas.add(new BalaToSend(bala.getPosX(), bala.getPosY(), nave.getId(), bala.getIdBala()));
+                    naveArmaBalas.add(new BalaToSend(bala.getPosX(), bala.getPosY(), nave.getId(), bala.getIdBala(), angle));
                     bala.setAdded(true);
                 } else{
                     naveArmaBalas.forEach(balaToSend -> {

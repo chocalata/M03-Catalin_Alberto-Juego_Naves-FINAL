@@ -8,11 +8,14 @@ public class BalaToSend {
     private double posX;
     private double posY;
 
-    public BalaToSend(double posX, double posY, int idNave, int idBala){
+    private double angle;
+
+    public BalaToSend(double posX, double posY, int idNave, int idBala, double angle){
         this.posX = posX;
         this.posY = posY;
         this.idBala = idBala;
         this.idNave = idNave;
+        this.angle = angle;
     }
 
     public double getPosX() {
@@ -34,5 +37,9 @@ public class BalaToSend {
 
     public int getIdNave() {
         return idNave;
+    }
+
+    public double getAngle() {
+        return angle;
     }
 }

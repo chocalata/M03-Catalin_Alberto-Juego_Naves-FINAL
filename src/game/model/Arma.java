@@ -28,7 +28,7 @@ public class Arma {
     }
 
     private int addIdToBala(){
-        if(idBalaActual > 5){
+        if(idBalaActual > 10){
             idBalaActual = 0;
         }
         idBalaActual++;
