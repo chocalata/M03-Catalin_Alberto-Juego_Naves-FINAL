@@ -157,30 +157,37 @@ public class GameController extends GameSetter implements Initializable {
                     if (!imagenOtrasNaves.containsKey(nave.getIdNave())) {
                         imagenOtrasNaves.put(nave.getIdNave(), new ImageView("game/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
                         imagenRotadaOtrasNaves.put(nave.getIdNave(), new Image("game/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
-                        rotateNaveRecibida(nave.getIdNave(), nave.getAngle());
-                        graphicsContext.drawImage(imagenRotadaOtrasNaves.get(nave.getIdNave()), nave.getNavePosX(), nave.getNavePosY());
+//                        rotateNaveRecibida(nave.getIdNave(), nave.getAngle());
+//                        graphicsContext.drawImage(imagenRotadaOtrasNaves.get(nave.getIdNave()), nave.getNavePosX(), nave.getNavePosY());
+//
+//                        nave.getNaveArmaBalas().forEach(bala -> {
+//                            graphicsContext.drawImage(rotateBalaRecibida(bala.getAngle()), bala.getPosX(), bala.getPosY());
+//
+//                            System.out.println(bala.getPosX() + "  " + bala.getPosY());
+//                            System.out.println(bala.getAngle());
+//                        });
 
-                        nave.getNaveArmaBalas().forEach(bala -> {
-                            graphicsContext.drawImage(rotateBalaRecibida(bala.getAngle()), bala.getPosX(), bala.getPosY());
-
-                            System.out.println(bala.getPosX() + "  " + bala.getPosY());
-                        });
+                        drawRecivedData(nave);
                     }else {
-                        rotateNaveRecibida(nave.getIdNave(), nave.getAngle());
-                        graphicsContext.drawImage(imagenRotadaOtrasNaves.get(nave.getIdNave()), nave.getNavePosX(), nave.getNavePosY());
-                        nave.getNaveArmaBalas().forEach(bala -> {
-                            graphicsContext.drawImage(rotateBalaRecibida(bala.getAngle()), bala.getPosX(), bala.getPosY());
-                            System.out.println(bala.getPosX() + "  " + bala.getPosY());
-                        });
-
+                        drawRecivedData(nave);
                     }
-
                 }
             });
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+    }
+
+
+    private void drawRecivedData(NaveToRecive nave) {
+        rotateNaveRecibida(nave.getIdNave(), nave.getAngle());
+        graphicsContext.drawImage(imagenRotadaOtrasNaves.get(nave.getIdNave()), nave.getNavePosX(), nave.getNavePosY());
+        nave.getNaveArmaBalas().forEach(bala -> {
+            graphicsContext.drawImage(rotateBalaRecibida(bala.getAngle()), bala.getPosX(), bala.getPosY());
+            System.out.println(bala.getPosX() + "  " + bala.getPosY());
+            System.out.println(bala.getAngle());
+        });
     }
 
     private void rotateNaveRecibida(int id, double angle){

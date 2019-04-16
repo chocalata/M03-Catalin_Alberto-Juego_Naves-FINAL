@@ -28,8 +28,12 @@ public class Bala {
     
     private boolean added;
 
+    private double angle;
+
     public Bala(GraphicsContext graphicsContext, double x, double y, double cc, double co, double angle, int idBala){
         //Para saber si la he añadido dentro del JSON.
+        this.angle = angle;
+
         added = false;
 
         this.idBala = idBala;
@@ -103,5 +107,9 @@ public class Bala {
 
     public int getIdBala() {
         return idBala;
+    }
+
+    public double getAngle() {
+        return angle;
     }
 }
