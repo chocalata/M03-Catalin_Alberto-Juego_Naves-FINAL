@@ -5,6 +5,7 @@ import StatVars.Resoluciones;
 
 import game.GameSetter;
 import game.model.toSend.NaveToSend;
+import game.services.MeteorService;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -48,6 +49,7 @@ public class GameController extends GameSetter implements Initializable {
     private ArrayList<NaveToRecive> navesRecived;
 
     private byte[] recivingData;
+    private MeteorService meteorService;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -92,22 +94,36 @@ public class GameController extends GameSetter implements Initializable {
         }
     }
 
+    private double timingMeteoritos = 0;
+    private double anteriorCurrentNanoTime = 0;
+
     private void startSigle(){
         final long startNanoTime = System.nanoTime();
+        meteorService = new MeteorService(scene.getWidth(),scene.getHeight(),graphicsContext);
 
         new AnimationTimer() {
             public void handle(long currentNanoTime)
             {
+                if(anteriorCurrentNanoTime == 0){
+                    anteriorCurrentNanoTime = currentNanoTime;
+                }
+                timingMeteoritos += (currentNanoTime-anteriorCurrentNanoTime)*Math.pow(10, -9);
+                anteriorCurrentNanoTime = currentNanoTime;
+
+                if(timingMeteoritos > 1) {
+                    meteorService.create(nave.getPosX()+(nave.getImagenRotada().getWidth())/2, nave.getPosY()+(nave.getImagenRotada().getHeight())/2);
+                    timingMeteoritos = 0;
+                }
+
                 nave.update(false);
+                meteorService.update();
 
                 checkCollisions();
 
                 graphicsContext.clearRect(0,0, stage.getWidth(), stage.getHeight());
 
-                dataToSend.setData(nave, time);
-                System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + Transformer.classToJson(dataToSend));
-
                 nave.render();
+                meteorService.render();
 
             }
         }.start();
@@ -207,9 +223,26 @@ public class GameController extends GameSetter implements Initializable {
 
     private void checkCollisions(){
         checkNaveInScreen();
-        checkBalaInScreen();
+        checkCollisionBala();
         checkCollisionNaves();
+        checkCollisionMeteor();
 
+    }
+
+    private void checkCollisionMeteor() {
+        //Se puede juntar el contenido de este método y el de checkCollisionBala
+        meteorService.getMeteoritos().forEach(meteorito -> {
+            if(meteorito.getPosX() < 0){
+                meteorito.remove();
+            }else if(meteorito.getPosX() > stage.getWidth()){
+                meteorito.remove();
+            }
+            if(meteorito.getPosY() < 0){
+                meteorito.remove();
+            }else if(meteorito.getPosY() > stage.getHeight()){
+                meteorito.remove();
+            }
+        });
     }
 
     private boolean checkCollisionNaves() {
@@ -237,7 +270,7 @@ public class GameController extends GameSetter implements Initializable {
         return false;
     }
 
-    private void checkBalaInScreen() {
+    private void checkCollisionBala() {
         nave.getArma().getBalas().forEach(bala -> {
             if(bala.getPosX() < 0){
                 bala.remove();
