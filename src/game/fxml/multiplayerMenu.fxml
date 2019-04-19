@@ -19,7 +19,7 @@
    <children>
       <ImageView fitHeight="1000.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../img/fondo_menu.jpg" />
+            <Image url="@../res/img/fondo_menu.jpg" />
          </image>
          <cursor>
             <Cursor fx:constant="TEXT" />
@@ -40,7 +40,7 @@
                <children>
                   <ImageView fitHeight="70.0" fitWidth="216.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../img/img_titulo_apolo_x.png" />
+                        <Image url="@../res/img/img_titulo_apolo_x.png" />
                      </image>
                      <GridPane.margin>
                         <Insets left="52.0" />

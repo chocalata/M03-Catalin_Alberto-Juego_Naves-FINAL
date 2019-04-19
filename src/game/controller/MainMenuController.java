@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.ImageView;
 
 import java.io.IOException;
 
@@ -34,7 +35,7 @@ public class MainMenuController extends SceneStageSetter {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/multiplayerMenu.fxml"));
         Parent root = loader.load();
 
-        scene = new Scene(root, Resoluciones.MENU_SCREEN_WIDTH, Resoluciones.MENU_SCREEN_HEIGHT);
+        scene = new Scene(root, stage.getWidth(), stage.getHeight());
 
         MultiplayerMenuController multiplayerMenuController = loader.getController();
         multiplayerMenuController.setScene(scene);

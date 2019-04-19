@@ -4,17 +4,21 @@ import StatVars.Packets;
 import StatVars.Resoluciones;
 
 import game.GameSetter;
+import game.model.Bala;
 import game.model.toSend.NaveToSend;
 import game.services.MeteorService;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import formatClasses.NaveToRecive;
 import Transformmer.Transformer;
@@ -51,6 +55,10 @@ public class GameController extends GameSetter implements Initializable {
     private byte[] recivingData;
     private MeteorService meteorService;
 
+    @FXML Text score;
+
+    @FXML AnchorPane gameOverScreen;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -72,7 +80,7 @@ public class GameController extends GameSetter implements Initializable {
         snapshotParametersBalas = new SnapshotParameters();
         snapshotParametersBalas.setFill(Color.TRANSPARENT);
 
-        imagenBala = new ImageView("game/img/bala.png");
+        imagenBala = new ImageView("game/res/img/bala.png");
     }
 
     @Override
@@ -94,25 +102,44 @@ public class GameController extends GameSetter implements Initializable {
         }
     }
 
-    private double timingMeteoritos = 0;
+    private double timeSeconds = 0;
     private double anteriorCurrentNanoTime = 0;
 
+    private double timingMeteor = 0;
+
+    private int lapsedTime = 0;
+
+    private double dificulty = 1;
+
     private void startSigle(){
-        final long startNanoTime = System.nanoTime();
+        runningGame = true;
+
         meteorService = new MeteorService(scene.getWidth(),scene.getHeight(),graphicsContext);
 
         new AnimationTimer() {
             public void handle(long currentNanoTime)
             {
+                double timing = (currentNanoTime-anteriorCurrentNanoTime)*Math.pow(10, -9);
                 if(anteriorCurrentNanoTime == 0){
                     anteriorCurrentNanoTime = currentNanoTime;
                 }
-                timingMeteoritos += (currentNanoTime-anteriorCurrentNanoTime)*Math.pow(10, -9);
+
+                timeSeconds += timing;
+                timingMeteor += timing;
                 anteriorCurrentNanoTime = currentNanoTime;
 
-                if(timingMeteoritos > 1) {
-                    meteorService.create(nave.getPosX()+(nave.getImagenRotada().getWidth())/2, nave.getPosY()+(nave.getImagenRotada().getHeight())/2);
-                    timingMeteoritos = 0;
+                if( timingMeteor*dificulty >= 1) {
+                    meteorService.create(nave.getPosX()+(nave.getImagenRotada().getWidth())/2, nave.getPosY()+(nave.getImagenRotada().getHeight())/2, 5+(dificulty));
+                    timingMeteor = 0;
+                }
+
+                ////HAY QUE ACABAR LA ESCALA DE DIFICULTAD
+                if((int)timeSeconds % 5 == 0){
+                    if(lapsedTime == 0 || (int)timeSeconds % 5 != lapsedTime){
+                        dificulty += 0.1;
+                        lapsedTime = (int)timeSeconds % 5;
+
+                    }
                 }
 
                 nave.update(false);
@@ -125,8 +152,29 @@ public class GameController extends GameSetter implements Initializable {
                 nave.render();
                 meteorService.render();
 
+                if(!runningGame){
+                    this.stop();
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/gameOver.fxml"));
+
+                        loader.load();
+
+                        GameOverController gameController = loader.getController();
+                        gameController.setScene(scene);
+                        gameController.setStage(stage);
+                        gameController.setScore(score.getText());
+
+                        gameOverScreen.getChildren().add(loader.getRoot());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
             }
         }.start();
+
+
     }
 
     private void startMultiplayer() throws SocketException {
@@ -179,8 +227,8 @@ public class GameController extends GameSetter implements Initializable {
         navesRecived.forEach(nave->{
             if(this.nave.getId() != nave.getIdNave()) {
                 if (!imagenOtrasNaves.containsKey(nave.getIdNave())) {
-                    imagenOtrasNaves.put(nave.getIdNave(), new ImageView("game/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
-                    imagenRotadaOtrasNaves.put(nave.getIdNave(), new Image("game/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
+                    imagenOtrasNaves.put(nave.getIdNave(), new ImageView("game/res/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
+                    imagenRotadaOtrasNaves.put(nave.getIdNave(), new Image("game/res/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
 //                        rotateNaveRecibida(nave.getIdNave(), nave.getAngle());
 //                        graphicsContext.drawImage(imagenRotadaOtrasNaves.get(nave.getIdNave()), nave.getNavePosX(), nave.getNavePosY());
 //
@@ -231,18 +279,50 @@ public class GameController extends GameSetter implements Initializable {
 
     private void checkCollisionMeteor() {
         //Se puede juntar el contenido de este método y el de checkCollisionBala
-        meteorService.getMeteoritos().forEach(meteorito -> {
-            if(meteorito.getPosX() < 0){
-                meteorito.remove();
-            }else if(meteorito.getPosX() > stage.getWidth()){
-                meteorito.remove();
+        meteorService.getMeteoritos().forEach(meteor -> {
+            if(meteor.getPosX() < 0 - Resoluciones.LINEA_DESTRUCCION){
+                meteor.remove();
+            }else if(meteor.getPosX() > stage.getWidth() + Resoluciones.LINEA_DESTRUCCION){
+                meteor.remove();
             }
-            if(meteorito.getPosY() < 0){
-                meteorito.remove();
-            }else if(meteorito.getPosY() > stage.getHeight()){
-                meteorito.remove();
+            if(meteor.getPosY() < 0 - Resoluciones.LINEA_DESTRUCCION){
+                meteor.remove();
+            }else if(meteor.getPosY() > stage.getHeight() + Resoluciones.LINEA_DESTRUCCION){
+                meteor.remove();
+            }
+
+            Rectangle meteorArea = new Rectangle(
+                    (int) meteor.getPosX(),
+                    (int) meteor.getPosY(),
+                    (int) meteor.getImgMeteoritoRotada().getWidth(),
+                    (int) meteor.getImgMeteoritoRotada().getHeight()
+            );
+            Rectangle otherObject;
+            for (Bala bala:nave.getArma().getBalas()) {
+                otherObject = new Rectangle(
+                        (int)bala.getPosX(),
+                        (int)bala.getPosY(),
+                        (int)bala.getImagenRotada().getWidth(),
+                        (int)bala.getImagenRotada().getHeight());
+                if(meteorArea.intersects(otherObject)){
+                    bala.remove();
+                    meteor.remove();
+                    score.setText(String.valueOf(Integer.parseInt(score.getText()) + 50));
+                }
+            }
+            if(meteorArea.intersects(new Rectangle(
+                    (int)nave.getPosX(),
+                    (int)nave.getPosY(),
+                    (int)nave.getImagenRotada().getWidth(),
+                    (int)nave.getImagenRotada().getHeight()))){
+                meteor.remove();
+                runningGame = false;
             }
         });
+
+
+
+
     }
 
     private boolean checkCollisionNaves() {

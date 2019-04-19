@@ -19,7 +19,7 @@ public class MultiplayerLobbyController extends SceneStageSetter {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/game.fxml"));
         Parent root = loader.load();
 
-        scene = new Scene(root, Resoluciones.MENU_SCREEN_WIDTH, Resoluciones.MENU_SCREEN_HEIGHT);
+        scene = new Scene(root, stage.getWidth(), stage.getHeight());
 
         GameController gameController = loader.getController();
         gameController.beforeStartGame(stage, scene, paket);
@@ -34,7 +34,7 @@ public class MultiplayerLobbyController extends SceneStageSetter {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/multiplayerLobby.fxml"));
         Parent root = loader.load();
 
-        scene = new Scene(root, Resoluciones.MENU_SCREEN_WIDTH, Resoluciones.MENU_SCREEN_HEIGHT);
+        scene = new Scene(root, stage.getWidth(), stage.getHeight());
 
         MainMenuController mainMenuController = loader.getController();
         mainMenuController.setScene(scene);

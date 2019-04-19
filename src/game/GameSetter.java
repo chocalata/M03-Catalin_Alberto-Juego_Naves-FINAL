@@ -15,7 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 
-public class GameSetter extends SceneStageSetter {
+public abstract class GameSetter extends SceneStageSetter {
     protected GraphicsContext graphicsContext;
 
     //Si se ha pulsado alguna.
@@ -31,6 +31,8 @@ public class GameSetter extends SceneStageSetter {
     protected int portServer;
 
     protected DatagramPacket packet;
+
+    protected boolean runningGame;
 
     public void beforeStartGame(Stage stage, Scene scene, DatagramPacket packet) {
         this.packet = packet;
@@ -50,7 +52,7 @@ public class GameSetter extends SceneStageSetter {
 
         initControlPress();
 
-        setNave(new Nave(graphicsContext,500,500, idNave, new ImageView("game/img/naves/navePlayer_" + idNave + ".png"), this.upPressed, this.downPressed, this.rightPressed, this.leftPressed, this.anyPressed));
+        setNave(new Nave(graphicsContext,500,500, idNave, new ImageView("game/res/img/naves/navePlayer_" + idNave + ".png"), this.upPressed, this.downPressed, this.rightPressed, this.leftPressed, this.anyPressed));
 
         setControls();
 

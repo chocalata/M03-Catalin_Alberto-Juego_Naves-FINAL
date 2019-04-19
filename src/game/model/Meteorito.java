@@ -21,14 +21,16 @@ public class Meteorito {
 
     private Enums.MeteorState state;
 
-    public Meteorito(double posX, double posY, double xNave, double yNave, GraphicsContext graphicsContext) {
+    public Meteorito(double posX, double posY, double xNave, double yNave, double speed, GraphicsContext graphicsContext) {
         this.posX = posX;
         this.posY = posY;
+
+        this.speed = speed;
 
         SnapshotParameters snapshotParameters = new SnapshotParameters();
         snapshotParameters.setFill(Color.TRANSPARENT);
 
-        ImageView imgMeteorito = new ImageView("game/img/img_meteorito.png");
+        ImageView imgMeteorito = new ImageView("game/res/img/img_meteorito.png");
 
         imgMeteorito.setRotate(Math.random()*360);
         imgMeteoritoRotada = imgMeteorito.snapshot(snapshotParameters, null);
@@ -72,5 +74,9 @@ public class Meteorito {
 
     public Enums.MeteorState getState() {
         return state;
+    }
+
+    public Image getImgMeteoritoRotada() {
+        return imgMeteoritoRotada;
     }
 }

@@ -28,7 +28,7 @@ public class MultiplayerMenuController extends SceneStageSetter {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/mainMenu.fxml"));
         Parent root = loader.load();
 
-        scene = new Scene(root, Resoluciones.MENU_SCREEN_WIDTH, Resoluciones.MENU_SCREEN_HEIGHT);
+        scene = new Scene(root, stage.getWidth(), stage.getHeight());
 
         MainMenuController mainMenuController = loader.getController();
         mainMenuController.setScene(scene);

@@ -27,7 +27,7 @@
          <children>
             <ImageView fitHeight="1000.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../img/fondo_menu.jpg" />
+                  <Image url="@../res/img/fondo_menu.jpg" />
                </image>
             </ImageView>
             <Pane layoutX="308.0" layoutY="299.0" prefHeight="402.0">
@@ -70,7 +70,7 @@
                         </Button>
                         <ImageView fitHeight="83.0" fitWidth="246.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../img/img_titulo_apolo_x.png" />
+                              <Image url="@../res/img/img_titulo_apolo_x.png" />
                            </image>
                            <GridPane.margin>
                               <Insets left="26.0" />

@@ -1,6 +1,7 @@
 package game.services;
 
 import StatVars.Enums;
+import StatVars.Resoluciones;
 import game.model.Meteorito;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
@@ -23,20 +24,20 @@ public class MeteorService {
         this.screenHeight = screenHeight;
     }
 
-    public void create(double xNave, double yNave) {
+    public void create(double xNave, double yNave, double speed) {
 
         double posX = (int) (Math.random() * screenWidth);
         double posY = (int) (Math.random() *screenHeight);
 
         switch ((int)(Math.random()*4)) {
 
-            case NORTH: posY=0; break;
-            case EAST: posX = screenWidth; break;
-            case SOUTH: posY = screenHeight; break;
-            default: posY = 0;
+            case NORTH: posY= 0 - Resoluciones.LINEA_DESTRUCCION; break;
+            case EAST: posX = screenWidth + Resoluciones.LINEA_DESTRUCCION; break;
+            case SOUTH: posY = screenHeight + Resoluciones.LINEA_DESTRUCCION; break;
+            default: posX = 0 - Resoluciones.LINEA_DESTRUCCION;
         }
-
-       meteoritos.add(new Meteorito(posX,posY, xNave, yNave, graphicsContext));
+        System.out.println(speed);
+        meteoritos.add(new Meteorito(posX,posY, xNave, yNave, speed, graphicsContext));
     }
 
     public void update() {
