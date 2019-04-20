@@ -3,14 +3,15 @@ package game.model;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 
-import java.awt.*;
+import java.io.File;
 
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
-import javafx.scene.transform.Rotate;
 
 public class Nave {
     private int id;
@@ -32,7 +33,14 @@ public class Nave {
 
     private GraphicsContext graphicsContext;
 
+    private Media soundBala;
+
+    private MediaPlayer playerSoundBala;
+
     public Nave(GraphicsContext graphicsContext, int posX, int posY, int idNave, ImageView imgNave, BooleanProperty upPressed, BooleanProperty downPressed, BooleanProperty rightPressed, BooleanProperty leftPressed, BooleanBinding anyPressed) {
+        soundBala = new Media(new File("src/game/res/audio/chipium.mp3").toURI().toString());
+        playerSoundBala = new MediaPlayer(soundBala);
+
         this.id = idNave;
 
         arma = new Arma(graphicsContext);
@@ -138,6 +146,8 @@ public class Nave {
     }
 
     public void shoot(double cursorX, double cursorY) {
+        playerSoundBala = new MediaPlayer(soundBala);
+        playerSoundBala.play();
         arma.shoot(
                 (posX + imgNave.getImage().getWidth()/2),
                 (posY + imgNave.getImage().getHeight()/2),

@@ -128,19 +128,19 @@ public class GameController extends GameSetter implements Initializable {
                 timingMeteor += timing;
                 anteriorCurrentNanoTime = currentNanoTime;
 
-                if( timingMeteor*dificulty >= 1) {
-                    meteorService.create(nave.getPosX()+(nave.getImagenRotada().getWidth())/2, nave.getPosY()+(nave.getImagenRotada().getHeight())/2, 5+(dificulty));
+                if( timingMeteor*(dificulty/6+1) >= 1) {
+                    meteorService.create(nave.getPosX()+(nave.getImagenRotada().getWidth())/2, nave.getPosY()+(nave.getImagenRotada().getHeight())/2, 2+(dificulty));
                     timingMeteor = 0;
                 }
 
                 ////HAY QUE ACABAR LA ESCALA DE DIFICULTAD
-                if((int)timeSeconds % 5 == 0){
-                    if(lapsedTime == 0 || (int)timeSeconds % 5 != lapsedTime){
-                        dificulty += 0.1;
-                        lapsedTime = (int)timeSeconds % 5;
-
-                    }
-                }
+//                if((int)timeSeconds % 5 == 0){
+//                    if(lapsedTime == 0 || (int)timeSeconds % 5 != lapsedTime){
+//                        dificulty += 0.1;
+//                        lapsedTime = (int)timeSeconds % 5;
+//
+//                    }
+//                }
 
                 nave.update(false);
                 meteorService.update();
@@ -308,6 +308,7 @@ public class GameController extends GameSetter implements Initializable {
                     bala.remove();
                     meteor.remove();
                     score.setText(String.valueOf(Integer.parseInt(score.getText()) + 50));
+                    dificulty += 1;
                 }
             }
             if(meteorArea.intersects(new Rectangle(
