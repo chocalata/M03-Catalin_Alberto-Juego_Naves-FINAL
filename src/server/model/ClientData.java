@@ -1,4 +1,4 @@
-package Server.model;
+package server.model;
 
 public class ClientData {
 

@@ -1,7 +1,7 @@
-package Server;
+package server;
 
 import StatVars.Packets;
-import Server.model.ClientData;
+import server.model.ClientData;
 import formatClasses.NaveToRecive;
 import Transformmer.Transformer;
 
