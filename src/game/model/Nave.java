@@ -35,11 +35,9 @@ public class Nave {
 
     private Media soundBala;
 
-    private MediaPlayer playerSoundBala;
 
     public Nave(GraphicsContext graphicsContext, int posX, int posY, int idNave, ImageView imgNave, BooleanProperty upPressed, BooleanProperty downPressed, BooleanProperty rightPressed, BooleanProperty leftPressed, BooleanBinding anyPressed) {
         soundBala = new Media(new File("src/game/res/audio/chipium.mp3").toURI().toString());
-        playerSoundBala = new MediaPlayer(soundBala);
 
         this.id = idNave;
 
@@ -146,8 +144,8 @@ public class Nave {
     }
 
     public void shoot(double cursorX, double cursorY) {
-        playerSoundBala = new MediaPlayer(soundBala);
-        playerSoundBala.play();
+        new MediaPlayer(soundBala).play();
+
         arma.shoot(
                 (posX + imgNave.getImage().getWidth()/2),
                 (posY + imgNave.getImage().getHeight()/2),
