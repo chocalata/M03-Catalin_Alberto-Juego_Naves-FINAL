@@ -1,9 +1,8 @@
 package game.services;
 
-import StatVars.Enums;
-import StatVars.Resoluciones;
+import statVars.Enums;
+import statVars.Resoluciones;
 import game.model.Meteorito;
-import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.ArrayList;

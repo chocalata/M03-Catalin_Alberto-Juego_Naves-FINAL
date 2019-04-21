@@ -1,15 +1,12 @@
 package game.controller;
 
-import StatVars.Resoluciones;
-import StatVars.Strings;
-import game.GameSetter;
+import statVars.Strings;
 import game.SceneStageSetter;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
 
 import java.io.IOException;
 

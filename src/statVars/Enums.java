@@ -1,4 +1,4 @@
-package StatVars;
+package statVars;
 
 public class Enums {
     public enum BulletState {

@@ -1,10 +1,8 @@
 package game.model;
 
-import StatVars.Enums;
-import com.sun.prism.Graphics;
+import statVars.Enums;
 import javafx.scene.canvas.GraphicsContext;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class Arma {

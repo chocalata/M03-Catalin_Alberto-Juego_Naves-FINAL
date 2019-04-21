@@ -1,7 +1,7 @@
 package game.model;
 
-import StatVars.Enums;
-import StatVars.Resoluciones;
+import statVars.Enums;
+import statVars.Resoluciones;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;

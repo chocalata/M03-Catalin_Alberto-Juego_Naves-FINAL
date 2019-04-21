@@ -1,6 +1,6 @@
 package game.controller;
 
-import StatVars.Strings;
+import statVars.Strings;
 import game.SceneStageSetter;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

@@ -1,7 +1,7 @@
 package game.controller;
 
-import StatVars.Resoluciones;
-import StatVars.Strings;
+import statVars.Resoluciones;
+import statVars.Strings;
 import game.SceneStageSetter;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,8 +12,6 @@ import javafx.scene.control.TextField;
 
 import java.io.IOException;
 import java.net.*;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 public class MultiplayerMenuController extends SceneStageSetter {
     private DatagramSocket socket;

@@ -1,6 +1,6 @@
 package game.model;
 
-import StatVars.Enums;
+import statVars.Enums;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;

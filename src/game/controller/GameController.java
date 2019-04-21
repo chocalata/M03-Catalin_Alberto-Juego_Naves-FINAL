@@ -1,7 +1,7 @@
 package game.controller;
 
-import StatVars.Packets;
-import StatVars.Resoluciones;
+import statVars.Packets;
+import statVars.Resoluciones;
 
 import game.GameSetter;
 import game.model.Bala;
@@ -21,7 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import formatClasses.NaveToRecive;
-import Transformmer.Transformer;
+import transformmer.Transformer;
 
 import java.awt.*;
 import java.io.IOException;

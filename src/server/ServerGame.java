@@ -1,9 +1,9 @@
 package server;
 
-import StatVars.Packets;
+import statVars.Packets;
 import server.model.ClientData;
 import formatClasses.NaveToRecive;
-import Transformmer.Transformer;
+import transformmer.Transformer;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

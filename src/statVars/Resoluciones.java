@@ -1,4 +1,4 @@
-package StatVars;
+package statVars;
 
 public class Resoluciones {
     public final static double GAME_SCREEN_WIDTH = 1200;

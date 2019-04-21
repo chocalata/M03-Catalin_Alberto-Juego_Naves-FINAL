@@ -1,6 +1,5 @@
 package game;
 
-import StatVars.Resoluciones;
 import game.controller.MainMenuController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
