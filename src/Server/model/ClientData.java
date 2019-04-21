@@ -1,6 +1,4 @@
-package server.model;
-
-import java.net.InetAddress;
+package Server.model;
 
 public class ClientData {
 
