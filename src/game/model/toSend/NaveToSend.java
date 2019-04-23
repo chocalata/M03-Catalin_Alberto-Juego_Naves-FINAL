@@ -30,7 +30,7 @@ public class NaveToSend {
         naveArmaBalas = new ArrayList<>();
         timer = new Timer(3);
     }
-    int prueba = 0;
+
     public void setData(Nave nave, double time) {
         timer.update(time);
 

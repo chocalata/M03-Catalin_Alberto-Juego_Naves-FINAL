@@ -1,8 +1,12 @@
 package game.model;
 
+import javafx.scene.image.Image;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import statVars.Enums;
 import javafx.scene.canvas.GraphicsContext;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class Arma {
@@ -16,13 +20,42 @@ public class Arma {
     private GraphicsContext graphicsContext;
     private int idBalaActual;
 
+    private int balasDisponibles;
+    private final int MAX_BALAS = 3;
+
+    private Media soundBala;
+    private Media soundOutOfAmmo;
+
+    private Timer reloadTimer;
+
+    private Image imgAmmoBala;
+
+
     public Arma(GraphicsContext graphicsContext){
+        imgAmmoBala = new Image("game/res/img/bala.png");
+
+        reloadTimer = new Timer(0.75);
+
+        balasDisponibles = 3;
+
+        soundBala = new Media(new File("src/game/res/audio/chipium.mp3").toURI().toString());
+        soundOutOfAmmo = new Media(new File("src/game/res/audio/outOfAmmo.mp3").toURI().toString());
+
         this.graphicsContext = graphicsContext;
         balas = new ArrayList<>();
     }
 
     public void shoot(double x, double y, double cc, double co, double angle) {
-        balas.add(new Bala(graphicsContext, x, y, cc, co, angle, addIdToBala()));
+        if(balasDisponibles != 0) {
+            if(balasDisponibles == MAX_BALAS){
+                reloadTimer.setTime(0);
+            }
+            new MediaPlayer(soundBala).play();
+            balasDisponibles--;
+            balas.add(new Bala(graphicsContext, x, y, cc, co, angle, addIdToBala()));
+        }else {
+            new MediaPlayer(soundOutOfAmmo).play();
+        }
     }
 
     private int addIdToBala(){
@@ -33,7 +66,7 @@ public class Arma {
         return idBalaActual;
     }
 
-    //borra las balas fuera de pantalla
+    //borra las balas
     private void removeOOSBalas() {
         balasToRemove = new ArrayList<>();
         balas.forEach(bala -> {
@@ -46,14 +79,24 @@ public class Arma {
         balasToRemove.forEach(bala -> balas.remove(bala));
     }
 
-    public void update(){
+    public void update(double time){
         removeOOSBalas();
+
+        reloadTimer.update(time);
+        if(reloadTimer.check() && balasDisponibles != MAX_BALAS){
+            balasDisponibles++;
+        }
+
+
         if(!balas.isEmpty()) {
             balas.forEach(Bala::update);
         }
     }
 
     public void render(){
+        for (int i = 0; i < balasDisponibles; i++) {
+            graphicsContext.drawImage(imgAmmoBala, 20 + 30*i, 100);
+        }
         if(!balas.isEmpty()) {
             balas.forEach(Bala::render);
         }

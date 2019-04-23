@@ -27,7 +27,7 @@
    <children>
       <Canvas fx:id="canvas" />
    </children>
-   <AnchorPane fx:id="gameOverScreen" prefHeight="500" prefWidth="500" layoutX="600.0" layoutY="200.0">
+   <AnchorPane fx:id="gameOverScreen" prefHeight="500" prefWidth="500" layoutX="500.0" layoutY="200.0">
       <!--AQUI IRÁ LA PANTALLA DE GAME OVER.-->
    </AnchorPane>
    <cursor>

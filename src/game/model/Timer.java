@@ -20,6 +20,10 @@ public class Timer {
         return false;
     }
 
+    public void setTime(double time) {
+        this.time = time;
+    }
+
     public void setMax(double newMax){
         max = newMax;
     }

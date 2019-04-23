@@ -3,14 +3,10 @@ package game.model;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 
-import java.io.File;
-
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 
 public class Nave {
@@ -20,7 +16,11 @@ public class Nave {
 
     private double posX;
     private double posY;
+
     private final int SPEED = 5;
+    private int lifes;
+    private final int MAX_LIFES = 5;
+
     private BooleanProperty upPressed, downPressed, rightPressed, leftPressed;
     private BooleanBinding anyPressed;
 
@@ -33,11 +33,12 @@ public class Nave {
 
     private GraphicsContext graphicsContext;
 
-    private Media soundBala;
+    private Image imgCorazonVida;
 
 
     public Nave(GraphicsContext graphicsContext, int posX, int posY, int idNave, ImageView imgNave, BooleanProperty upPressed, BooleanProperty downPressed, BooleanProperty rightPressed, BooleanProperty leftPressed, BooleanBinding anyPressed) {
-        soundBala = new Media(new File("src/game/res/audio/chipium.mp3").toURI().toString());
+        lifes = 3;
+        imgCorazonVida = new Image("game/res/img/vida.png");
 
         this.id = idNave;
 
@@ -144,7 +145,8 @@ public class Nave {
     }
 
     public void shoot(double cursorX, double cursorY) {
-        new MediaPlayer(soundBala).play();
+
+        //mediaPlayer.setOnEndOfMedia(()->mediaPlayer.stop());
 
         arma.shoot(
                 (posX + imgNave.getImage().getWidth()/2),
@@ -154,8 +156,8 @@ public class Nave {
                 getAngle());
     }
 
-    public void update(boolean colisiona){
-        arma.update();
+    public void update(boolean colisiona, double time){
+        arma.update(time);
         if(anyPressed.get() && !colisiona) {
             mover();
         }
@@ -164,8 +166,23 @@ public class Nave {
 
     public void render(){
         arma.render();
-
+        for (int i = 0; i < lifes; i++) {
+            graphicsContext.drawImage(imgCorazonVida, 20 + 30*i, 70);
+        }
         graphicsContext.drawImage(imagenRotada, posX, posY);
     }
 
+    public void subsLife(){
+        lifes--;
+    }
+
+    public void addLife(){
+        if(lifes != 5) {
+            lifes++;
+        }
+    }
+
+    public int getLifes() {
+        return lifes;
+    }
 }

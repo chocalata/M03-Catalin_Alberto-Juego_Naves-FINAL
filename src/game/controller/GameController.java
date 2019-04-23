@@ -102,12 +102,9 @@ public class GameController extends GameSetter implements Initializable {
         }
     }
 
-    private double timeSeconds = 0;
     private double anteriorCurrentNanoTime = 0;
 
     private double timingMeteor = 0;
-
-    private int lapsedTime = 0;
 
     private double dificulty = 1;
 
@@ -123,8 +120,6 @@ public class GameController extends GameSetter implements Initializable {
                 if(anteriorCurrentNanoTime == 0){
                     anteriorCurrentNanoTime = currentNanoTime;
                 }
-
-                timeSeconds += timing;
                 timingMeteor += timing;
                 anteriorCurrentNanoTime = currentNanoTime;
 
@@ -142,7 +137,7 @@ public class GameController extends GameSetter implements Initializable {
 //                    }
 //                }
 
-                nave.update(false);
+                nave.update(false, timing);
                 meteorService.update();
 
                 checkCollisions();
@@ -187,7 +182,7 @@ public class GameController extends GameSetter implements Initializable {
 
                 graphicsContext.clearRect(0,0, stage.getWidth(), stage.getHeight());
 
-                nave.update(checkCollisionNaves());
+                nave.update(checkCollisionNaves(), currentNanoTime);
 
                 dataToSend.setData(nave, time);
                 dataToSend.getNaveArmaBalas().forEach(balaToSend -> System.out.println(balaToSend.getAngle()));
@@ -273,7 +268,7 @@ public class GameController extends GameSetter implements Initializable {
         checkNaveInScreen();
         checkCollisionBala();
         checkCollisionNaves();
-        checkCollisionMeteor();
+        //checkCollisionMeteor();
 
     }
 
@@ -308,7 +303,10 @@ public class GameController extends GameSetter implements Initializable {
                     bala.remove();
                     meteor.remove();
                     score.setText(String.valueOf(Integer.parseInt(score.getText()) + 50));
-                    dificulty += 1;
+                    if(Integer.parseInt(score.getText())%500 == 0 && nave.getLifes() != 5){
+                        nave.addLife();
+                    }
+                    dificulty += 0.5;
                 }
             }
             if(meteorArea.intersects(new Rectangle(
@@ -317,7 +315,10 @@ public class GameController extends GameSetter implements Initializable {
                     (int)nave.getImagenRotada().getWidth(),
                     (int)nave.getImagenRotada().getHeight()))){
                 meteor.remove();
-                runningGame = false;
+                nave.subsLife();
+                if(nave.getLifes() == 0){
+                    runningGame = false;
+                }
             }
         });
 
