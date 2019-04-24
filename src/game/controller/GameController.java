@@ -42,7 +42,6 @@ public class GameController extends GameSetter implements Initializable {
 
     //Datos que se mandan al servidor
     private NaveToSend dataToSend;
-    private double time;
 
     private NavesRecivedService navesRecivedService;
 
@@ -62,7 +61,6 @@ public class GameController extends GameSetter implements Initializable {
 
         //Al ser 60 fotogramas por segundo, quiere decir que entre fotograma
         //y fotograma pasan 0.017 segundos más o menos.
-        time = 0.01666666666;
 
         recivingData = new byte[Packets.PACKET_LENGHT];
 
@@ -164,17 +162,21 @@ public class GameController extends GameSetter implements Initializable {
         DatagramSocket socket = new DatagramSocket();
         navesRecivedService = new NavesRecivedService(graphicsContext, nave.getId());
 
-        //POR AQUI: AL COMENZAR EL JUEGO EN LINEA QUE HAGA ALL LO QUE TENGA QUE HACER
         new AnimationTimer() {
             public void handle(long currentNanoTime)
             {
+                double timing = (currentNanoTime-anteriorCurrentNanoTime)*Math.pow(10, -9);
+                if(anteriorCurrentNanoTime == 0){
+                    anteriorCurrentNanoTime = currentNanoTime;
+                }
+                anteriorCurrentNanoTime = currentNanoTime;
 
                 graphicsContext.clearRect(0,0, stage.getWidth(), stage.getHeight());
 
-                nave.update(currentNanoTime);
+                nave.update(timing);
 
-                dataToSend.setData(nave, time);
-                dataToSend.getNaveArmaBalas().forEach(balaToSend -> System.out.println(balaToSend.getAngle()));
+                dataToSend.setData(nave, timing);
+                //dataToSend.getNaveArmaBalas().forEach(balaToSend -> System.out.println(balaToSend.getAngle()));
 
                 String sendData = Transformer.classToJson(dataToSend);
                 packet = new DatagramPacket(sendData.getBytes(),
@@ -209,58 +211,10 @@ public class GameController extends GameSetter implements Initializable {
         }.start();
     }
 
-//    private void renderNavesRecibidas(){
-//        navesRecived.forEach(nave->{
-//            if(this.nave.getId() != nave.getIdNave()) {
-//                if (!imagenOtrasNaves.containsKey(nave.getIdNave())) {
-//                    imagenOtrasNaves.put(nave.getIdNave(), new ImageView("game/res/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
-//                    imagenRotadaOtrasNaves.put(nave.getIdNave(), new Image("game/res/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
-////                        rotateNaveRecibida(nave.getIdNave(), nave.getAngle());
-////                        graphicsContext.drawImage(imagenRotadaOtrasNaves.get(nave.getIdNave()), nave.getNavePosX(), nave.getNavePosY());
-////
-////                        nave.getNaveArmaBalas().forEach(bala -> {
-////                            graphicsContext.drawImage(rotateBalaRecibida(bala.getAngle()), bala.getPosX(), bala.getPosY());
-////
-////                            System.out.println(bala.getPosX() + "  " + bala.getPosY());
-////                            System.out.println(bala.getAngle());
-////                        });
-//
-//                    drawRecivedData(nave);
-//                }else {
-//                    drawRecivedData(nave);
-//                }
-//            }
-//        });
-//
-//    }
-//
-//
-//    private void drawRecivedData(NaveToRecive nave) {
-//        rotateNaveRecibida(nave.getIdNave(), nave.getAngle());
-//        graphicsContext.drawImage(imagenRotadaOtrasNaves.get(nave.getIdNave()), nave.getNavePosX(), nave.getNavePosY());
-//        nave.getNaveArmaBalas().forEach(bala -> {
-//            graphicsContext.drawImage(rotateBalaRecibida(bala.getAngle()), bala.getPosX(), bala.getPosY());
-//            System.out.println(bala.getPosX() + "  " + bala.getPosY());
-//            System.out.println(bala.getAngle());
-//        });
-//    }
-//
-//    private void rotateNaveRecibida(int id, double angle){
-//        imagenOtrasNaves.get(id).setRotate(angle);
-//        imagenRotadaOtrasNaves.put(id, imagenOtrasNaves.get(id).snapshot(snapshotParameters, null));
-//    }
-//
-//    private Image rotateBalaRecibida(double angle){
-//        imagenBala.setRotate(angle);
-//        return imagenBala.snapshot(snapshotParameters, null);
-//    }
-
     private void checkCollisions(){
         checkNaveInScreen();
         checkCollisionBala();
-        checkCollisionMeteor();
-
-        //checkCollisionNaves();
+        //checkCollisionMeteor();
     }
 
     private void checkCollisionMeteor() {
@@ -313,32 +267,6 @@ public class GameController extends GameSetter implements Initializable {
             }
         });
     }
-
-    //COLISIONES NAVES.
-//    private boolean checkCollisionNaves() {
-//        if (navesRecived != null){
-//            for (NaveToRecive naveRecived: navesRecived) {
-//                if(this.nave.getId() != naveRecived.getIdNave()) {
-//                    Rectangle naveRecibida = new Rectangle(
-//                            (int) naveRecived.getNavePosX(),
-//                            (int) naveRecived.getNavePosY(),
-//                            (int) imagenOtrasNaves.get(naveRecived.getIdNave()).getImage().getWidth(),
-//                            (int) imagenOtrasNaves.get(naveRecived.getIdNave()).getImage().getHeight()
-//                    );
-//                    Rectangle naveLocal = new Rectangle(
-//                            (int) nave.getPosX(),
-//                            (int) nave.getPosY(),
-//                            (int) nave.getImgNave().getImage().getWidth(),
-//                            (int) nave.getImgNave().getImage().getHeight()
-//                    );
-//                    if(naveLocal.intersects(naveRecibida)){
-//                        return true;
-//                    }
-//                }
-//            }
-//        }
-//        return false;
-//    }
 
     private void checkCollisionBala() {
         nave.getArma().getBalas().forEach(bala -> {

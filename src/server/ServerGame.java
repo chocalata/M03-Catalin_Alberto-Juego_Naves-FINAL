@@ -107,7 +107,7 @@ public class ServerGame {
     private String updateJsonGame(DatagramPacket packet) throws UnsupportedEncodingException {
         NaveToRecive naveRecibida = Transformer.jsonToNaveToRecive(Transformer.packetDataToString(packet));
 
-        naveRecibida.getNaveArmaBalas().forEach(balaToSend -> System.out.println(balaToSend.getAngle()));
+        //naveRecibida.getNaveArmaBalas().forEach(balaToSend -> System.out.println(balaToSend.getAngle()));
 
         if(naves.contains(naveRecibida)){
             naves.set(naves.indexOf(naveRecibida), naveRecibida);

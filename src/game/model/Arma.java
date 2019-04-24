@@ -81,12 +81,11 @@ public class Arma {
 
     public void update(double time){
         removeOOSBalas();
-
         reloadTimer.update(time);
+        //System.out.println(reloadTimer.check());
         if(reloadTimer.check() && balasDisponibles != MAX_BALAS){
             balasDisponibles++;
         }
-
 
         if(!balas.isEmpty()) {
             balas.forEach(Bala::update);
@@ -94,6 +93,7 @@ public class Arma {
     }
 
     public void render(){
+        System.out.println(balasDisponibles);
         for (int i = 0; i < balasDisponibles; i++) {
             graphicsContext.drawImage(imgAmmoBala, 125 + 20*i, 85);
         }
