@@ -1,5 +1,6 @@
 package game.controller;
 
+import game.services.NavesRecivedService;
 import statVars.Packets;
 import statVars.Resoluciones;
 
@@ -43,14 +44,7 @@ public class GameController extends GameSetter implements Initializable {
     private NaveToSend dataToSend;
     private double time;
 
-    private Map<Integer, Image> imagenRotadaOtrasNaves;
-    private Map<Integer, ImageView> imagenOtrasNaves;
-    private SnapshotParameters snapshotParameters;
-    private SnapshotParameters snapshotParametersBalas;
-
-    private ImageView imagenBala;
-
-    private ArrayList<NaveToRecive> navesRecived;
+    private NavesRecivedService navesRecivedService;
 
     private byte[] recivingData;
     private MeteorService meteorService;
@@ -72,15 +66,6 @@ public class GameController extends GameSetter implements Initializable {
 
         recivingData = new byte[Packets.PACKET_LENGHT];
 
-        imagenOtrasNaves = new HashMap<>();
-        imagenRotadaOtrasNaves = new HashMap<>();
-        snapshotParameters = new SnapshotParameters();
-        snapshotParameters.setFill(Color.TRANSPARENT);
-
-        snapshotParametersBalas = new SnapshotParameters();
-        snapshotParametersBalas.setFill(Color.TRANSPARENT);
-
-        imagenBala = new ImageView("game/res/img/bala.png");
     }
 
     @Override
@@ -139,7 +124,7 @@ public class GameController extends GameSetter implements Initializable {
 //                    }
 //                }
 
-                nave.update(false, timing);
+                nave.update(timing);
                 meteorService.update();
 
                 checkCollisions();
@@ -171,8 +156,13 @@ public class GameController extends GameSetter implements Initializable {
         }.start();
     }
 
+    //NAVE AZUL: #3c42d8
+    //NAVE VERDE: #3cd846
+    //NAVE ROJA: #d83c3c
+    //NAVE ROSA: #d43cd8
     private void startMultiplayer() throws SocketException {
         DatagramSocket socket = new DatagramSocket();
+        navesRecivedService = new NavesRecivedService(graphicsContext, nave.getId());
 
         //POR AQUI: AL COMENZAR EL JUEGO EN LINEA QUE HAGA ALL LO QUE TENGA QUE HACER
         new AnimationTimer() {
@@ -181,7 +171,7 @@ public class GameController extends GameSetter implements Initializable {
 
                 graphicsContext.clearRect(0,0, stage.getWidth(), stage.getHeight());
 
-                nave.update(checkCollisionNaves(), currentNanoTime);
+                nave.update(currentNanoTime);
 
                 dataToSend.setData(nave, time);
                 dataToSend.getNaveArmaBalas().forEach(balaToSend -> System.out.println(balaToSend.getAngle()));
@@ -197,7 +187,9 @@ public class GameController extends GameSetter implements Initializable {
                     packet = new DatagramPacket(recivingData, Packets.PACKET_LENGHT);
                     socket.receive(packet);
 
-                    navesRecived = Transformer.jsonToArrayListNaves(Transformer.packetDataToString(packet));
+                    navesRecivedService.setNavesRecived(Transformer.jsonToArrayListNaves(Transformer.packetDataToString(packet)));
+                    //navesRecived = Transformer.jsonToArrayListNaves(Transformer.packetDataToString(packet));
+
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
 
@@ -205,7 +197,7 @@ public class GameController extends GameSetter implements Initializable {
                     e.printStackTrace();
                 }
 
-                renderNavesRecibidas();
+                navesRecivedService.renderNavesRecibidas();
 
                 checkCollisions();
 
@@ -217,58 +209,58 @@ public class GameController extends GameSetter implements Initializable {
         }.start();
     }
 
-    private void renderNavesRecibidas(){
-        navesRecived.forEach(nave->{
-            if(this.nave.getId() != nave.getIdNave()) {
-                if (!imagenOtrasNaves.containsKey(nave.getIdNave())) {
-                    imagenOtrasNaves.put(nave.getIdNave(), new ImageView("game/res/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
-                    imagenRotadaOtrasNaves.put(nave.getIdNave(), new Image("game/res/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
-//                        rotateNaveRecibida(nave.getIdNave(), nave.getAngle());
-//                        graphicsContext.drawImage(imagenRotadaOtrasNaves.get(nave.getIdNave()), nave.getNavePosX(), nave.getNavePosY());
+//    private void renderNavesRecibidas(){
+//        navesRecived.forEach(nave->{
+//            if(this.nave.getId() != nave.getIdNave()) {
+//                if (!imagenOtrasNaves.containsKey(nave.getIdNave())) {
+//                    imagenOtrasNaves.put(nave.getIdNave(), new ImageView("game/res/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
+//                    imagenRotadaOtrasNaves.put(nave.getIdNave(), new Image("game/res/img/naves/navePlayer_" + nave.getIdNave() + ".png"));
+////                        rotateNaveRecibida(nave.getIdNave(), nave.getAngle());
+////                        graphicsContext.drawImage(imagenRotadaOtrasNaves.get(nave.getIdNave()), nave.getNavePosX(), nave.getNavePosY());
+////
+////                        nave.getNaveArmaBalas().forEach(bala -> {
+////                            graphicsContext.drawImage(rotateBalaRecibida(bala.getAngle()), bala.getPosX(), bala.getPosY());
+////
+////                            System.out.println(bala.getPosX() + "  " + bala.getPosY());
+////                            System.out.println(bala.getAngle());
+////                        });
 //
-//                        nave.getNaveArmaBalas().forEach(bala -> {
-//                            graphicsContext.drawImage(rotateBalaRecibida(bala.getAngle()), bala.getPosX(), bala.getPosY());
+//                    drawRecivedData(nave);
+//                }else {
+//                    drawRecivedData(nave);
+//                }
+//            }
+//        });
 //
-//                            System.out.println(bala.getPosX() + "  " + bala.getPosY());
-//                            System.out.println(bala.getAngle());
-//                        });
-
-                    drawRecivedData(nave);
-                }else {
-                    drawRecivedData(nave);
-                }
-            }
-        });
-
-    }
-
-
-    private void drawRecivedData(NaveToRecive nave) {
-        rotateNaveRecibida(nave.getIdNave(), nave.getAngle());
-        graphicsContext.drawImage(imagenRotadaOtrasNaves.get(nave.getIdNave()), nave.getNavePosX(), nave.getNavePosY());
-        nave.getNaveArmaBalas().forEach(bala -> {
-            graphicsContext.drawImage(rotateBalaRecibida(bala.getAngle()), bala.getPosX(), bala.getPosY());
-            System.out.println(bala.getPosX() + "  " + bala.getPosY());
-            System.out.println(bala.getAngle());
-        });
-    }
-
-    private void rotateNaveRecibida(int id, double angle){
-        imagenOtrasNaves.get(id).setRotate(angle);
-        imagenRotadaOtrasNaves.put(id, imagenOtrasNaves.get(id).snapshot(snapshotParameters, null));
-    }
-
-    private Image rotateBalaRecibida(double angle){
-        imagenBala.setRotate(angle);
-        return imagenBala.snapshot(snapshotParameters, null);
-    }
+//    }
+//
+//
+//    private void drawRecivedData(NaveToRecive nave) {
+//        rotateNaveRecibida(nave.getIdNave(), nave.getAngle());
+//        graphicsContext.drawImage(imagenRotadaOtrasNaves.get(nave.getIdNave()), nave.getNavePosX(), nave.getNavePosY());
+//        nave.getNaveArmaBalas().forEach(bala -> {
+//            graphicsContext.drawImage(rotateBalaRecibida(bala.getAngle()), bala.getPosX(), bala.getPosY());
+//            System.out.println(bala.getPosX() + "  " + bala.getPosY());
+//            System.out.println(bala.getAngle());
+//        });
+//    }
+//
+//    private void rotateNaveRecibida(int id, double angle){
+//        imagenOtrasNaves.get(id).setRotate(angle);
+//        imagenRotadaOtrasNaves.put(id, imagenOtrasNaves.get(id).snapshot(snapshotParameters, null));
+//    }
+//
+//    private Image rotateBalaRecibida(double angle){
+//        imagenBala.setRotate(angle);
+//        return imagenBala.snapshot(snapshotParameters, null);
+//    }
 
     private void checkCollisions(){
         checkNaveInScreen();
         checkCollisionBala();
-        checkCollisionNaves();
-        //checkCollisionMeteor();
+        checkCollisionMeteor();
 
+        //checkCollisionNaves();
     }
 
     private void checkCollisionMeteor() {
@@ -322,30 +314,31 @@ public class GameController extends GameSetter implements Initializable {
         });
     }
 
-    private boolean checkCollisionNaves() {
-        if (navesRecived != null){
-            for (NaveToRecive naveRecived: navesRecived) {
-                if(this.nave.getId() != naveRecived.getIdNave()) {
-                    Rectangle naveRecibida = new Rectangle(
-                            (int) naveRecived.getNavePosX(),
-                            (int) naveRecived.getNavePosY(),
-                            (int) imagenOtrasNaves.get(naveRecived.getIdNave()).getImage().getWidth(),
-                            (int) imagenOtrasNaves.get(naveRecived.getIdNave()).getImage().getHeight()
-                    );
-                    Rectangle naveLocal = new Rectangle(
-                            (int) nave.getPosX(),
-                            (int) nave.getPosY(),
-                            (int) nave.getImgNave().getImage().getWidth(),
-                            (int) nave.getImgNave().getImage().getHeight()
-                    );
-                    if(naveLocal.intersects(naveRecibida)){
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
+    //COLISIONES NAVES.
+//    private boolean checkCollisionNaves() {
+//        if (navesRecived != null){
+//            for (NaveToRecive naveRecived: navesRecived) {
+//                if(this.nave.getId() != naveRecived.getIdNave()) {
+//                    Rectangle naveRecibida = new Rectangle(
+//                            (int) naveRecived.getNavePosX(),
+//                            (int) naveRecived.getNavePosY(),
+//                            (int) imagenOtrasNaves.get(naveRecived.getIdNave()).getImage().getWidth(),
+//                            (int) imagenOtrasNaves.get(naveRecived.getIdNave()).getImage().getHeight()
+//                    );
+//                    Rectangle naveLocal = new Rectangle(
+//                            (int) nave.getPosX(),
+//                            (int) nave.getPosY(),
+//                            (int) nave.getImgNave().getImage().getWidth(),
+//                            (int) nave.getImgNave().getImage().getHeight()
+//                    );
+//                    if(naveLocal.intersects(naveRecibida)){
+//                        return true;
+//                    }
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
     private void checkCollisionBala() {
         nave.getArma().getBalas().forEach(bala -> {

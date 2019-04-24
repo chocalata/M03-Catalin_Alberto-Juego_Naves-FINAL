@@ -156,9 +156,9 @@ public class Nave {
                 getAngle());
     }
 
-    public void update(boolean colisiona, double time){
+    public void update(double time){
         arma.update(time);
-        if(anyPressed.get() && !colisiona) {
+        if(anyPressed.get()) {
             mover();
         }
         rotate();
