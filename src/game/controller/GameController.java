@@ -55,7 +55,7 @@ public class GameController extends GameSetter implements Initializable {
     private byte[] recivingData;
     private MeteorService meteorService;
 
-    @FXML Text score;
+    @FXML Text score_p1;
 
     @FXML AnchorPane gameOverScreen;
 
@@ -157,7 +157,7 @@ public class GameController extends GameSetter implements Initializable {
                         GameOverController gameController = loader.getController();
                         gameController.setScene(scene);
                         gameController.setStage(stage);
-                        gameController.setScore(score.getText());
+                        gameController.setScore(score_p1.getText());
 
                         gameOverScreen.getChildren().add(loader.getRoot());
                     } catch (IOException e) {
@@ -302,8 +302,8 @@ public class GameController extends GameSetter implements Initializable {
                 if(meteorArea.intersects(otherObject)){
                     bala.remove();
                     meteor.remove();
-                    score.setText(String.valueOf(Integer.parseInt(score.getText()) + 50));
-                    if(Integer.parseInt(score.getText())%500 == 0 && nave.getLifes() != 5){
+                    score_p1.setText(String.valueOf(Integer.parseInt(score_p1.getText()) + 50));
+                    if(Integer.parseInt(score_p1.getText())%500 == 0 && nave.getLifes() != 5){
                         nave.addLife();
                     }
                     dificulty += 0.5;
@@ -321,10 +321,6 @@ public class GameController extends GameSetter implements Initializable {
                 }
             }
         });
-
-
-
-
     }
 
     private boolean checkCollisionNaves() {
