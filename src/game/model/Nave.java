@@ -165,11 +165,12 @@ public class Nave {
     }
 
     public void render(){
+        graphicsContext.drawImage(imagenRotada, posX, posY);
+
         arma.render();
         for (int i = 0; i < lifes; i++) {
-            graphicsContext.drawImage(imgCorazonVida, 20 + 30*i, 70);
+            graphicsContext.drawImage(imgCorazonVida, 120 + 30*i, 110);
         }
-        graphicsContext.drawImage(imagenRotada, posX, posY);
     }
 
     public void subsLife(){

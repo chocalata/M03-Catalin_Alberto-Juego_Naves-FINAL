@@ -113,6 +113,8 @@ public class GameController extends GameSetter implements Initializable {
 
         meteorService = new MeteorService(scene.getWidth(),scene.getHeight(),graphicsContext);
 
+        score_p1.setText("0");
+
         new AnimationTimer() {
             public void handle(long currentNanoTime)
             {
@@ -147,6 +149,7 @@ public class GameController extends GameSetter implements Initializable {
                 nave.render();
                 meteorService.render();
 
+
                 if(!runningGame){
                     this.stop();
                     try {
@@ -164,12 +167,8 @@ public class GameController extends GameSetter implements Initializable {
                         e.printStackTrace();
                     }
                 }
-
-
             }
         }.start();
-
-
     }
 
     private void startMultiplayer() throws SocketException {

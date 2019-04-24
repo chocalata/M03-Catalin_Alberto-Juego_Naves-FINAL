@@ -95,7 +95,7 @@ public class Arma {
 
     public void render(){
         for (int i = 0; i < balasDisponibles; i++) {
-            graphicsContext.drawImage(imgAmmoBala, 20 + 30*i, 100);
+            graphicsContext.drawImage(imgAmmoBala, 125 + 20*i, 85);
         }
         if(!balas.isEmpty()) {
             balas.forEach(Bala::render);
