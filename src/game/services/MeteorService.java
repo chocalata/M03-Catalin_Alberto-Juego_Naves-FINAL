@@ -26,7 +26,7 @@ public class MeteorService {
     public void create(double xNave, double yNave, double speed) {
 
         double posX = (int) (Math.random() * screenWidth);
-        double posY = (int) (Math.random() *screenHeight);
+        double posY = (int) (Math.random() * screenHeight);
 
         switch ((int)(Math.random()*4)) {
 
@@ -36,7 +36,7 @@ public class MeteorService {
             default: posX = 0 - Resoluciones.LINEA_DESTRUCCION;
         }
         System.out.println(speed);
-        meteoritos.add(new Meteorito(posX,posY, xNave, yNave, speed, graphicsContext));
+        meteoritos.add(new Meteorito(posX, posY, xNave, yNave, speed, graphicsContext));
     }
 
     public void update() {

@@ -11,42 +11,47 @@ import javafx.scene.Scene;
 import java.io.IOException;
 
 public class MainMenuController extends SceneStageSetter {
-    @FXML public void playGame() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/game.fxml"));
-        Parent root = loader.load();
+    @FXML public void playGame() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/game.fxml"));
+            Parent root = loader.load();
 
-        scene = new Scene(root, stage.getWidth(), stage.getHeight());
+            scene = new Scene(root, stage.getWidth(), stage.getHeight());
 
-        GameController gameController = loader.getController();
-        gameController.beforeStartGame(stage,scene, null);
-        gameController.start(false);
+            GameController gameController = loader.getController();
+            gameController.beforeStartGame(stage,scene, null);
+            gameController.start(false);
 
-        stage.setTitle(Strings.NOMBRE_JUEGO);
-        stage.setScene(scene);
-        //stage.setMaximized(true);
-        stage.show();
+            stage.setTitle(Strings.NOMBRE_JUEGO);
+            stage.setScene(scene);
+            stage.show();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
-    @FXML public void openMultiplayer() throws IOException {
+    @FXML public void openMultiplayer() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/multiplayerMenu.fxml"));
+            Parent root = loader.load();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/multiplayerMenu.fxml"));
-        Parent root = loader.load();
+            scene = new Scene(root, stage.getWidth(), stage.getHeight());
 
-        scene = new Scene(root, stage.getWidth(), stage.getHeight());
-
-        MultiplayerMenuController multiplayerMenuController = loader.getController();
-        multiplayerMenuController.setScene(scene);
-        multiplayerMenuController.setStage(stage);
+            MultiplayerMenuController multiplayerMenuController = loader.getController();
+            multiplayerMenuController.setScene(scene);
+            multiplayerMenuController.setStage(stage);
 
 
-        stage.setTitle(Strings.NOMBRE_JUEGO);
-        stage.setScene(scene);
-        stage.show();
+            stage.setTitle(Strings.NOMBRE_JUEGO);
+            stage.setScene(scene);
+            stage.show();
 
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     @FXML public void closeGame() {
         Platform.exit();
-
     }
 }

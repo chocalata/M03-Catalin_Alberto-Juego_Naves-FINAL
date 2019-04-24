@@ -7,23 +7,28 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class Main extends Application {
-//asd
     @Override
-    public void start(Stage primaryStage) throws Exception{
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/mainMenu.fxml"));
-        Parent root = loader.load();
+    public void start(Stage primaryStage) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/mainMenu.fxml"));
+            Parent root = loader.load();
 
-        Scene scene = new Scene(root, primaryStage.getWidth(), primaryStage.getHeight());
-        MainMenuController controller = loader.getController();
-        controller.setStage(primaryStage);
+            Scene scene = new Scene(root, primaryStage.getWidth(), primaryStage.getHeight());
+            MainMenuController controller = loader.getController();
+            controller.setStage(primaryStage);
 
-        primaryStage.setTitle("Apolo X");
-        primaryStage.setMaximized(true);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+            primaryStage.setTitle("Apolo X");
+            primaryStage.setMaximized(true);
+            primaryStage.setScene(scene);
+            primaryStage.show();
+
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
-
 
     public static void main(String[] args) {
         launch(args);

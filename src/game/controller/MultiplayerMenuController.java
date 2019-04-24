@@ -1,5 +1,6 @@
 package game.controller;
 
+import javafx.scene.control.Alert;
 import statVars.Resoluciones;
 import statVars.Strings;
 import game.SceneStageSetter;
@@ -18,7 +19,7 @@ public class MultiplayerMenuController extends SceneStageSetter {
     private DatagramPacket packet;
     private InetAddress ipServer;
 
-
+    Alert alert;
 
     @FXML TextField et_ipServer;
 
@@ -71,8 +72,20 @@ public class MultiplayerMenuController extends SceneStageSetter {
 
         }catch (SocketTimeoutException e){
             //MOSTRAR UN DIALOG DICIENDO QUE EL SERVIDOR NO RESPONDE
-            e.printStackTrace();
-        }catch (Exception e){
+            alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("ERROR");
+            alert.setHeaderText("Server not found");
+            alert.setContentText("Server not found, IP or Port are incorrect.");
+            alert.showAndWait();
+
+        }catch (ArrayIndexOutOfBoundsException | SocketException e){
+            alert=new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("ERROR");
+            alert.setHeaderText("Format Error");
+            alert.setContentText("This Ip format is Incorrect, example: 123.456.7.89:1234");
+            alert.showAndWait();
+
+        } catch (Exception e){
             e.printStackTrace();
         }
     }

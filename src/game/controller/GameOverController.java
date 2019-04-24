@@ -15,40 +15,49 @@ public class GameOverController extends SceneStageSetter {
 
     @FXML Text score;
 
-    public void setScore(String string){
+    void setScore(String string){
         score.setText("Score: " + string);
     }
 
 
-    public void exitGame(ActionEvent actionEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/mainMenu.fxml"));
-        Parent root = loader.load();
+    public void exitGame(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/mainMenu.fxml"));
+            Parent root = loader.load();
 
-        scene = new Scene(root, stage.getWidth(), stage.getHeight());
+            scene = new Scene(root, stage.getWidth(), stage.getHeight());
 
-        MainMenuController mainMenuController = loader.getController();
-        mainMenuController.setScene(scene);
-        mainMenuController.setStage(stage);
+            MainMenuController mainMenuController = loader.getController();
+            mainMenuController.setScene(scene);
+            mainMenuController.setStage(stage);
 
-        stage.setTitle(Strings.NOMBRE_JUEGO);
-        stage.setScene(scene);
-        //stage.setMaximized(true);
-        stage.show();
+            stage.setTitle(Strings.NOMBRE_JUEGO);
+            stage.setScene(scene);
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void restartGame(ActionEvent actionEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/game.fxml"));
-        Parent root = loader.load();
+    public void restartGame(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/game.fxml"));
+            Parent root = loader.load();
 
-        scene = new Scene(root, stage.getWidth(), stage.getHeight());
+            scene = new Scene(root, stage.getWidth(), stage.getHeight());
 
-        GameController gameController = loader.getController();
-        gameController.beforeStartGame(stage,scene, null);
-        gameController.start(false);
+            GameController gameController = loader.getController();
+            gameController.beforeStartGame(stage,scene, null);
+            gameController.start(false);
 
-        stage.setTitle(Strings.NOMBRE_JUEGO);
-        stage.setScene(scene);
-        //stage.setMaximized(true);
-        stage.show();
+            stage.setTitle(Strings.NOMBRE_JUEGO);
+            stage.setScene(scene);
+            //stage.setMaximized(true);
+            stage.show();
+
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 }
