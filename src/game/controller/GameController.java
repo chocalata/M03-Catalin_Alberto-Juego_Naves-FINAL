@@ -180,10 +180,11 @@ public class GameController extends GameSetter implements Initializable {
                     e.printStackTrace();
                 }
 
-                nave.update(timing);
-                checkCollisions();
-
                 navesRecivedService.renderNavesRecibidas();
+
+                nave.update(timing);
+
+                checkCollisions();
 
                 //dataToSend.setData(nave, time);
 
