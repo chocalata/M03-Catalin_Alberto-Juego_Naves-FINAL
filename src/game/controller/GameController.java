@@ -172,7 +172,6 @@ public class GameController extends GameSetter implements Initializable {
                     socket.receive(packet);
 
                     navesRecivedService.setNavesRecived(Transformer.jsonToArrayListNaves(Transformer.packetDataToString(packet)));
-                    //navesRecived = Transformer.jsonToArrayListNaves(Transformer.packetDataToString(packet));
 
                 } catch (IOException e) {
                     e.printStackTrace();
