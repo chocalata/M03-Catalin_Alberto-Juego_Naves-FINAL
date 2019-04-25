@@ -1,6 +1,8 @@
 package game.controller;
 
 import game.services.NavesRecivedService;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import statVars.Packets;
 import statVars.Resoluciones;
 
@@ -24,6 +26,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class GameController extends GameSetter implements Initializable {
@@ -140,6 +143,8 @@ public class GameController extends GameSetter implements Initializable {
     //NAVE ROJA: #d83c3c
     //NAVE ROSA: #d43cd8
     private void startMultiplayer() throws SocketException {
+        runningGame = true;
+
         DatagramSocket socket = new DatagramSocket();
         navesRecivedService = new NavesRecivedService(graphicsContext, nave.getId());
 
@@ -155,7 +160,7 @@ public class GameController extends GameSetter implements Initializable {
 
                 graphicsContext.clearRect(0,0, stage.getWidth(), stage.getHeight());
 
-                nave.update(timing);
+                checkCollisions();
 
                 dataToSend.setData(nave, timing);
                 //dataToSend.getNaveArmaBalas().forEach(balaToSend -> System.out.println(balaToSend.getAngle()));
@@ -177,9 +182,9 @@ public class GameController extends GameSetter implements Initializable {
                     e.printStackTrace();
                 }
 
-                navesRecivedService.renderNavesRecibidas();
+                nave.update(timing);
 
-                checkCollisions();
+                navesRecivedService.renderNavesRecibidas();
 
                 //dataToSend.setData(nave, time);
 
@@ -258,6 +263,31 @@ public class GameController extends GameSetter implements Initializable {
             }else if(bala.getPosY() > stage.getHeight()){
                 bala.remove();
             }
+        });
+
+        Map<Integer, Image> imagenRotadaOtrasNaves = navesRecivedService.getImagenRotadaOtrasNaves();
+
+        Map<Integer, ImageView> imagenOtrasNaves = navesRecivedService.getImagenOtrasNaves();
+
+        navesRecivedService.getNavesRecived().forEach(naveRecivedService->{
+            Rectangle naveArea = new Rectangle(
+                    (int) naveRecivedService.getNavePosX(),
+                    (int) naveRecivedService.getNavePosY(),
+                    (int) imagenRotadaOtrasNaves.get(naveRecivedService.getIdNave()).getWidth(),
+                    (int) imagenRotadaOtrasNaves.get(naveRecivedService.getIdNave()).getHeight());
+
+            nave.getArma().getBalas().forEach(bala -> {
+                if(naveArea.intersects(new Rectangle(
+                        (int) bala.getPosX(),
+                        (int) bala.getPosY(),
+                        (int) bala.getImagenRotada().getWidth(),
+                        (int) bala.getImagenRotada().getHeight()))){
+                    bala.remove();
+                    //HACER QUE SE GUARDE EL ID DE LA NAVE QUE HA SIDO TOCADA EN LOS DATOS QUE VAMOS A MANDAR AL SERVIDOR.
+
+                }
+            });
+
         });
     }
 

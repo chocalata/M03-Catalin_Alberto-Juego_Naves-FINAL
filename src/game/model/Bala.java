@@ -25,7 +25,7 @@ public class Bala {
     private GraphicsContext graphicsContext;
 
     private Image imagenRotada;
-    
+
     private boolean added;
 
     private double angle;
@@ -116,4 +116,5 @@ public class Bala {
     public Image getImagenRotada() {
         return imagenRotada;
     }
+
 }

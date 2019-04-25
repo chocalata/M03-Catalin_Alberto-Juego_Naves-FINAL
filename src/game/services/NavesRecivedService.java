@@ -61,22 +61,20 @@ public class NavesRecivedService {
 //                            System.out.println(bala.getAngle());
 //                        });
 
-                    drawRecivedData(nave);
+                    renderRecivedData(nave);
                 }else {
-                    drawRecivedData(nave);
+                    renderRecivedData(nave);
                 }
             }
         });
 
     }
 
-    private void drawRecivedData(NaveToRecive nave) {
+    private void renderRecivedData(NaveToRecive nave) {
         rotateNaveRecibida(nave.getIdNave(), nave.getAngle());
         graphicsContext.drawImage(imagenRotadaOtrasNaves.get(nave.getIdNave()), nave.getNavePosX(), nave.getNavePosY());
         nave.getNaveArmaBalas().forEach(bala -> {
             graphicsContext.drawImage(rotateBalaRecibida(bala.getAngle()), bala.getPosX(), bala.getPosY());
-            System.out.println(bala.getPosX() + "  " + bala.getPosY());
-            System.out.println(bala.getAngle());
         });
     }
 
@@ -88,5 +86,17 @@ public class NavesRecivedService {
     private Image rotateBalaRecibida(double angle){
         imagenBala.setRotate(angle);
         return imagenBala.snapshot(snapshotParameters, null);
+    }
+
+    public ArrayList<NaveToRecive> getNavesRecived() {
+        return navesRecived;
+    }
+
+    public Map<Integer, Image> getImagenRotadaOtrasNaves() {
+        return imagenRotadaOtrasNaves;
+    }
+
+    public Map<Integer, ImageView> getImagenOtrasNaves() {
+        return imagenOtrasNaves;
     }
 }
