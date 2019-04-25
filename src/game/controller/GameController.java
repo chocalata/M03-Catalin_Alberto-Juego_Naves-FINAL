@@ -113,15 +113,6 @@ public class GameController extends GameSetter implements Initializable {
                     timingMeteor = 0;
                 }
 
-                ////HAY QUE ACABAR LA ESCALA DE DIFICULTAD
-//                if((int)timeSeconds % 5 == 0){
-//                    if(lapsedTime == 0 || (int)timeSeconds % 5 != lapsedTime){
-//                        dificulty += 0.1;
-//                        lapsedTime = (int)timeSeconds % 5;
-//
-//                    }
-//                }
-
                 nave.update(timing);
                 meteorService.update();
 
