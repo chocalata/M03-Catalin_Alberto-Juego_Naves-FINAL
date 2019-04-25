@@ -270,23 +270,25 @@ public class GameController extends GameSetter implements Initializable {
         Map<Integer, ImageView> imagenOtrasNaves = navesRecivedService.getImagenOtrasNaves();
 
         navesRecivedService.getNavesRecived().forEach(naveRecivedService->{
-            Rectangle naveArea = new Rectangle(
-                    (int) naveRecivedService.getNavePosX(),
-                    (int) naveRecivedService.getNavePosY(),
-                    (int) imagenRotadaOtrasNaves.get(naveRecivedService.getIdNave()).getWidth(),
-                    (int) imagenRotadaOtrasNaves.get(naveRecivedService.getIdNave()).getHeight());
+            if(naveRecivedService.getIdNave() != nave.getId()) {
+                Rectangle naveArea = new Rectangle(
+                        (int) naveRecivedService.getNavePosX(),
+                        (int) naveRecivedService.getNavePosY(),
+                        (int) imagenRotadaOtrasNaves.get(naveRecivedService.getIdNave()).getWidth(),
+                        (int) imagenRotadaOtrasNaves.get(naveRecivedService.getIdNave()).getHeight());
 
-            nave.getArma().getBalas().forEach(bala -> {
-                if(naveArea.intersects(new Rectangle(
-                        (int) bala.getPosX(),
-                        (int) bala.getPosY(),
-                        (int) bala.getImagenRotada().getWidth(),
-                        (int) bala.getImagenRotada().getHeight()))){
-                    bala.remove();
-                    //HACER QUE SE GUARDE EL ID DE LA NAVE QUE HA SIDO TOCADA EN LOS DATOS QUE VAMOS A MANDAR AL SERVIDOR.
+                nave.getArma().getBalas().forEach(bala -> {
+                    if (naveArea.intersects(new Rectangle(
+                            (int) bala.getPosX(),
+                            (int) bala.getPosY(),
+                            (int) bala.getImagenRotada().getWidth(),
+                            (int) bala.getImagenRotada().getHeight()))) {
+                        bala.remove();
+                        //HACER QUE SE GUARDE EL ID DE LA NAVE QUE HA SIDO TOCADA EN LOS DATOS QUE VAMOS A MANDAR AL SERVIDOR.
 
-                }
-            });
+                    }
+                });
+            }
 
         });
     }
