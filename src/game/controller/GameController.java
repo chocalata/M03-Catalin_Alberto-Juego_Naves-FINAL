@@ -160,8 +160,6 @@ public class GameController extends GameSetter implements Initializable {
 
                 graphicsContext.clearRect(0,0, stage.getWidth(), stage.getHeight());
 
-                checkCollisions();
-
                 dataToSend.setData(nave, timing);
                 //dataToSend.getNaveArmaBalas().forEach(balaToSend -> System.out.println(balaToSend.getAngle()));
 
@@ -183,6 +181,7 @@ public class GameController extends GameSetter implements Initializable {
                 }
 
                 nave.update(timing);
+                checkCollisions();
 
                 navesRecivedService.renderNavesRecibidas();
 
