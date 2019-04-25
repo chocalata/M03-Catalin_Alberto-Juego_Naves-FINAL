@@ -14,37 +14,45 @@ public class MultiplayerLobbyController extends SceneStageSetter {
 
     private DatagramPacket paket;
 
-    public void playGameServer(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/game.fxml"));
-        Parent root = loader.load();
+    public void playGameServer(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/game.fxml"));
+            Parent root = loader.load();
 
-        scene = new Scene(root, stage.getWidth(), stage.getHeight());
+            scene = new Scene(root, stage.getWidth(), stage.getHeight());
 
-        GameController gameController = loader.getController();
-        gameController.beforeStartGame(stage, scene, paket);
-        gameController.start(true);
+            GameController gameController = loader.getController();
+            gameController.beforeStartGame(stage, scene, paket);
+            gameController.start(true);
 
-        stage.setTitle(Strings.NOMBRE_JUEGO);
-        stage.setScene(scene);
-        stage.show();
+            stage.setTitle(Strings.NOMBRE_JUEGO);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
-    public void backToMainMenu(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/multiplayerLobby.fxml"));
-        Parent root = loader.load();
+    public void backToMainMenu(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/multiplayerLobby.fxml"));
+            Parent root = loader.load();
 
-        scene = new Scene(root, stage.getWidth(), stage.getHeight());
+            scene = new Scene(root, stage.getWidth(), stage.getHeight());
 
-        MainMenuController mainMenuController = loader.getController();
-        mainMenuController.setScene(scene);
-        mainMenuController.setStage(stage);
+            MainMenuController mainMenuController = loader.getController();
+            mainMenuController.setScene(scene);
+            mainMenuController.setStage(stage);
 
-        stage.setTitle("Apolo X");
-        stage.setScene(scene);
-        stage.show();
+            stage.setTitle("Apolo X");
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e){
+               e.printStackTrace();
+        }
     }
 
-    public void setPaket(DatagramPacket paket) {
+    void setPaket(DatagramPacket paket) {
         this.paket = paket;
     }
 }

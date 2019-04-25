@@ -12,28 +12,18 @@ import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
-
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import formatClasses.NaveToRecive;
 import transformmer.Transformer;
 
 import java.awt.*;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 public class GameController extends GameSetter implements Initializable {
@@ -73,7 +63,7 @@ public class GameController extends GameSetter implements Initializable {
         canvas.setWidth(stage.getWidth());
     }
 
-    public void start(boolean isMultiplayer){
+    void start(boolean isMultiplayer){
         if(isMultiplayer){
             try {
                 startMultiplayer();
@@ -153,6 +143,7 @@ public class GameController extends GameSetter implements Initializable {
         DatagramSocket socket = new DatagramSocket();
         navesRecivedService = new NavesRecivedService(graphicsContext, nave.getId());
 
+        //POR AQUI: AL COMENZAR EL JUEGO EN LINEA QUE HAGA ALL LO QUE TENGA QUE HACER
         new AnimationTimer() {
             public void handle(long currentNanoTime)
             {
@@ -182,9 +173,6 @@ public class GameController extends GameSetter implements Initializable {
 
                     navesRecivedService.setNavesRecived(Transformer.jsonToArrayListNaves(Transformer.packetDataToString(packet)));
                     //navesRecived = Transformer.jsonToArrayListNaves(Transformer.packetDataToString(packet));
-
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
 
                 } catch (IOException e) {
                     e.printStackTrace();
