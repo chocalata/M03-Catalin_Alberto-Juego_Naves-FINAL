@@ -45,6 +45,16 @@ public class NavesRecivedService {
         this.navesRecived = navesRecived;
     }
 
+    public int getMyLives(){
+
+        for (NaveToRecive naveToRecive : navesRecived) {
+            if(myNaveId == naveToRecive.getIdNave()){
+                return naveToRecive.getLives();
+            }
+        }
+        return -1;
+    }
+
     public void renderNavesRecibidas(){
         navesRecived.forEach(nave->{
             if(myNaveId != nave.getIdNave()) {

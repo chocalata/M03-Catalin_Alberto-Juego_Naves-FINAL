@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 //Se pondrán las variables que se necesite para mandar al servidor.
 public class NaveToSend {
+
     private int idNave;
 
     //posicion nave
@@ -22,6 +23,8 @@ public class NaveToSend {
 
     //balas
     private ArrayList<BalaToSend> naveArmaBalas;
+    private ArrayList<Integer> navesTocadas;
+    private ArrayList<Integer> meteoritosTocados;
 
     //////FALTA: ESTA VARIABLE NO SE TIENE QUE PASAR EN EL JSON.
     private Timer timer;
@@ -90,5 +93,13 @@ public class NaveToSend {
 
     public ArrayList<BalaToSend> getNaveArmaBalas() {
         return naveArmaBalas;
+    }
+
+    public void addIdNaveTocada(int id){
+        navesTocadas.add(id);
+    }
+
+    public void clearIdNaveTocada() {
+        navesTocadas.clear();
     }
 }

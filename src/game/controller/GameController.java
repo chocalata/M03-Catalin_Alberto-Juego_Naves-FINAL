@@ -31,18 +31,14 @@ import java.util.ResourceBundle;
 
 public class GameController extends GameSetter implements Initializable {
 
-    @FXML Canvas canvas;
-
     //Datos que se mandan al servidor
     private NaveToSend dataToSend;
-
     private NavesRecivedService navesRecivedService;
-
     private byte[] recivingData;
     private MeteorService meteorService;
 
+    @FXML Canvas canvas;
     @FXML Text score_p1;
-
     @FXML AnchorPane gameOverScreen;
 
     @Override
@@ -182,11 +178,11 @@ public class GameController extends GameSetter implements Initializable {
 
                 navesRecivedService.renderNavesRecibidas();
 
+                nave.setLives(navesRecivedService.getMyLives());
+
                 nave.update(timing);
 
                 checkCollisions();
-
-                //dataToSend.setData(nave, time);
 
                 nave.render();
 
@@ -231,8 +227,8 @@ public class GameController extends GameSetter implements Initializable {
                     bala.remove();
                     meteor.remove();
                     score_p1.setText(String.valueOf(Integer.parseInt(score_p1.getText()) + 50));
-                    if(Integer.parseInt(score_p1.getText())%500 == 0 && nave.getLifes() != 5){
-                        nave.addLife();
+                    if(Integer.parseInt(score_p1.getText())%500 == 0 && nave.getLives() != 5){
+                        nave.addLive();
                     }
                     dificulty += 0.5;
                 }
@@ -243,8 +239,8 @@ public class GameController extends GameSetter implements Initializable {
                     (int)nave.getImagenRotada().getWidth(),
                     (int)nave.getImagenRotada().getHeight()))){
                 meteor.remove();
-                nave.subsLife();
-                if(nave.getLifes() == 0){
+                nave.subsLive();
+                if(nave.getLives() == 0){
                     runningGame = false;
                 }
             }
@@ -252,6 +248,7 @@ public class GameController extends GameSetter implements Initializable {
     }
 
     private void checkCollisionBala() {
+        dataToSend.clearIdNaveTocada();
         nave.getArma().getBalas().forEach(bala -> {
             if(bala.getPosX() < 0){
                 bala.remove();
@@ -286,10 +283,11 @@ public class GameController extends GameSetter implements Initializable {
                         bala.remove();
                         //HACER QUE SE GUARDE EL ID DE LA NAVE QUE HA SIDO TOCADA EN LOS DATOS QUE VAMOS A MANDAR AL SERVIDOR.
 
+                        // Añadimos la las id de las naves que han sido tocadas por tus balas
+                        dataToSend.addIdNaveTocada(naveRecivedService.getIdNave());
                     }
                 });
             }
-
         });
     }
 

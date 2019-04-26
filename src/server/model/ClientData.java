@@ -7,8 +7,9 @@ public class ClientData {
         this.port = port;
     }
 
-    private int idNave;
-    private int port;
+    private final int idNave;
+    private final int port;
+    private int lives;
 
     public int getIdNave() {
         return idNave;
@@ -17,4 +18,9 @@ public class ClientData {
     public int getPort() {
         return port;
     }
+
+    public int getLives() {
+        return lives;
+    }
+
 }

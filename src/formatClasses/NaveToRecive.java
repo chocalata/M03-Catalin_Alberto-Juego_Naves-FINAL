@@ -16,8 +16,13 @@ public class NaveToRecive {
     private double naveCursorPosX;
     private double naveCursorPosY;
 
+    private ArrayList<Integer> navesTocadas;
+    private ArrayList<Integer> meteoritosTocados;
+
     //angulo (nave y bala)
     private double angle;
+
+    private int lives;
 
     //balas
     private ArrayList<BalaToSend> naveArmaBalas;
@@ -55,8 +60,25 @@ public class NaveToRecive {
         return idNave == ((NaveToRecive) obj).getIdNave();
     }
 
+
     @Override
     public String toString() {
         return "ID: " + idNave + "\nAngulo: " + angle;
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public ArrayList<Integer> getNavesTocadas() {
+        return navesTocadas;
+    }
+
+    public ArrayList<Integer> getMeteoritosTocados() {
+        return meteoritosTocados;
+    }
+
+    public void subsLives() {
+        lives--;
     }
 }

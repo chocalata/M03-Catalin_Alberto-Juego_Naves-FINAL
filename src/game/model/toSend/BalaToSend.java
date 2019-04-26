@@ -7,7 +7,6 @@ public class BalaToSend {
 
     private double posX;
     private double posY;
-
     private double angle;
 
     public BalaToSend(double posX, double posY, int idNave, int idBala, double angle){
@@ -42,4 +41,5 @@ public class BalaToSend {
     public double getAngle() {
         return angle;
     }
+
 }

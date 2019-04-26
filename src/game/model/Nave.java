@@ -18,7 +18,7 @@ public class Nave {
     private double posY;
 
     private final int SPEED = 5;
-    private int lifes;
+    private int lives;
     private final int MAX_LIFES = 5;
 
     private BooleanProperty upPressed, downPressed, rightPressed, leftPressed;
@@ -37,7 +37,7 @@ public class Nave {
 
 
     public Nave(GraphicsContext graphicsContext, int posX, int posY, int idNave, ImageView imgNave, BooleanProperty upPressed, BooleanProperty downPressed, BooleanProperty rightPressed, BooleanProperty leftPressed, BooleanBinding anyPressed) {
-        lifes = 3;
+        lives = 3;
         imgCorazonVida = new Image("game/res/img/vida.png");
 
         this.id = idNave;
@@ -168,22 +168,27 @@ public class Nave {
         graphicsContext.drawImage(imagenRotada, posX, posY);
 
         arma.render();
-        for (int i = 0; i < lifes; i++) {
+        for (int i = 0; i < lives; i++) {
             graphicsContext.drawImage(imgCorazonVida, 120 + 30*i, 110);
         }
     }
 
-    public void subsLife(){
-        lifes--;
+    public void subsLive(){
+        lives--;
     }
 
-    public void addLife(){
-        if(lifes != 5) {
-            lifes++;
+    public void addLive(){
+        if(lives != 5) {
+            lives++;
         }
     }
 
-    public int getLifes() {
-        return lifes;
+    public int getLives() {
+        return lives;
     }
+
+    public void setLives(int lives) {
+        this.lives = lives;
+    }
+
 }

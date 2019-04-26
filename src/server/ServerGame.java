@@ -23,11 +23,13 @@ public class ServerGame {
 
     private Map<InetAddress, ClientData> mapIdNaves;
 
+    private Map<Integer, Integer> livesNaves;
 
     public void init(int port) throws SocketException {
         socket = new DatagramSocket(port);
         naves = new ArrayList<>();
         mapIdNaves = new HashMap<>();
+        livesNaves = new HashMap<>();
     }
 
     public void runServer() throws IOException {
@@ -40,7 +42,6 @@ public class ServerGame {
         //el servidor atén el port indefinidament
         while(true/* No esten todos los jugadores */){
 
-            //creació del paquet per rebre les dades
             DatagramPacket packet = new DatagramPacket(receivingData, Packets.PACKET_LENGHT);
             //espera de les dades
 
@@ -114,6 +115,16 @@ public class ServerGame {
         }else {
             naves.add(naveRecibida);
         }
+
+        naves.forEach(nave -> {
+            naveRecibida.getNavesTocadas().forEach(naveTocada -> {
+                if (nave.getIdNave() == naveTocada){
+                    nave.subsLives();
+                }
+            });
+        });
+
+
         //naves.forEach(nave-> System.out.println(nave.toString()));
         return Transformer.classToJson(naves);
     }
