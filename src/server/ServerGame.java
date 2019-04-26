@@ -115,14 +115,15 @@ public class ServerGame {
         }else {
             naves.add(naveRecibida);
         }
-
-        naves.forEach(nave -> {
-            naveRecibida.getNavesTocadas().forEach(naveTocada -> {
-                if (nave.getIdNave() == naveTocada){
-                    nave.subsLives();
-                }
+        if(naveRecibida.getNavesTocadas() != null) {
+            naves.forEach(nave -> {
+                naveRecibida.getNavesTocadas().forEach(naveTocada -> {
+                    if (nave.getIdNave() == naveTocada) {
+                        nave.subsLives();
+                    }
+                });
             });
-        });
+        }
 
 
         //naves.forEach(nave-> System.out.println(nave.toString()));
